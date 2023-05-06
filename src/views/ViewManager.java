@@ -16,6 +16,9 @@ public class ViewManager extends JFrame {
     private DialogCreateProcess dialogCreateProcess;
     private DialogCreateInitialPartitions dialogCreateInitialPartitions;
 
+    private Object[][] inQueue, currentList, readyList, dispatchList, executionList, expirationList, finishedList, noExecutionList;
+
+
     private boolean isPartitionsMenuActive = false;
 
 
@@ -180,5 +183,14 @@ public class ViewManager extends JFrame {
         SwingUtilities.updateComponentTreeUI(this);
     }
 
+    public void changeToReportMenu() {
+        this.remove(this.panelMenu);
+        this.add(this.panelMenuReports, BorderLayout.WEST);
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
+    public void setValuesToCurrentProcess(){
+        this.setValuesToTable(this.currentList, "Procesos Actuales");
+    }
 
 }

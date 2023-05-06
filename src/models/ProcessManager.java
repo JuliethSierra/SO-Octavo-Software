@@ -237,7 +237,7 @@ public class ProcessManager {
     }
     private void loadToExecQueue(PartitionReport process) {
         this.executionList.add(process);
-        System.out.println("execution " + executionList.toString());
+        System.out.println("execution " + executionList.toString() + "\n");
     }
     private void loadToExpirationQueue(PartitionReport process) {
         this.expirationList.add(process);

@@ -72,6 +72,24 @@ public class Controller implements ActionListener, KeyListener {
                 break;
             case "EliminarParticion":
                 this.deletePartition();
+            case "Reportes":
+                this.changeToReportMenu();
+                break;
+            case "Actuales":
+                break;
+            case "Ejecutados":
+                break;
+            case "Listos":
+                break;
+            case "Despachados":
+                break;
+            case "Ejecucion":
+                break;
+            case "Expirados":
+                break;
+            case "Finalizados":
+                break;
+            case "NoEjecutados":
                 break;
             case "Atras":
                 this.changeToMenu();
@@ -277,6 +295,18 @@ public class Controller implements ActionListener, KeyListener {
         this.viewManager.changeToMainMenu();
     }
 
+    private void changeToReportMenu(){
+        this.viewManager.changeToReportMenu();
+        this.viewManager.setValuesToCurrentProcess();
+     /*   if(this.processManager.getReadyList().size() != 0){
+            this.viewManager.changeToReportMenu();
+            this.viewManager.setValuesToCurrentProcess();
+        }
+        else {
+            Utilities.showErrorDialog("Debe iniciar la simulación antes de ver los reportes");
+        }*/
+
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
