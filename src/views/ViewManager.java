@@ -112,4 +112,23 @@ public class ViewManager extends JFrame {
         SwingUtilities.updateComponentTreeUI(this);
     }
 
+    public int getIndexDataInTable(){
+        return this.panelTable.getIndexDataProcess();
+    }
+    public void setProcessName(String processName){
+        this.dialogCreateProcess.setProcessName(processName);
+    }
+    public void setProcessTime(BigInteger processTime){
+        this.dialogCreateProcess.setTimeProcess(processTime);
+    }
+    public void setProcessSize(BigInteger processSize){
+        this.dialogCreateProcess.setProcessSize(processSize);
+    }
+
+    public void showModifyProcessDialog(){
+        this.dialogCreateProcess.changeButtonToModify();
+        this.dialogCreateProcess.setVisible(true);
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
 }
