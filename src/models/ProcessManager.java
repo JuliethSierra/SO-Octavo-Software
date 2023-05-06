@@ -178,6 +178,37 @@ public class ProcessManager {
         return processList;
     }
 
+    public void updatePartitions(Partition newPartition, int indexDataInTable) {
+        this.partitions.set(indexDataInTable, newPartition);
+    }
+
+    public void deletePartition(int indexDataInTable) {
+        this.partitions.remove(indexDataInTable);
+    }
+
+    public void cleanAllLists(){
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public Partition getPartitionByIndex(int indexDataInTable) {
+        return this.partitions.get(indexDataInTable);
+    }
+
+
     public Process getProcessInQueue(int indexDataInTable) {
         return this.inQueue.get(indexDataInTable);
     }

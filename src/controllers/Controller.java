@@ -58,6 +58,24 @@ public class Controller implements ActionListener, KeyListener {
             case "EliminarProceso":
                 this.deleteProcess();
                 break;
+            case "MenuParticiones":
+                this.changeToPartitionsMenu();
+                break;
+            case "CrearParticion":
+                this.showCreatePartitionDialog();
+                break;
+            case "ModificarParticion":
+                this.showModifyPartitionDialog();
+                break;
+            case "ConfirmarModificacionParticion":
+                this.confirmModifyPartition();
+                break;
+            case "EliminarParticion":
+                this.deletePartition();
+                break;
+            case "Atras":
+                this.changeToMenu();
+                break;
             case "Salir":
                 System.exit(0);
                 break;
@@ -190,6 +208,73 @@ public class Controller implements ActionListener, KeyListener {
 
         }
 
+    }
+
+    private void changeToPartitionsMenu(){
+        this.viewManager.setPartitionsMenuActive(true);
+        this.viewManager.changeTextInPartitionsMenu();
+        this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
+        this.viewManager.changeToPartitionsMenu();
+    }
+
+    private void showCreatePartitionDialog(){
+        this.viewManager.changeToCreatePartitionTexts();
+        this.viewManager.showCreatePartitionDialogWithoutTable();
+    }
+
+    private void showModifyPartitionDialog(){
+        if(this.viewManager.getIndexDataInTable() == -1){
+            Utilities.showErrorDialog("Debe seleccionar una partición");
+        }
+        else {
+            Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
+            this.viewManager.setPartitionName(partitionToModify.getName());
+            this.viewManager.setPartitionSize(partitionToModify.getSize().toString());
+            this.viewManager.showModifyPartitionDialog();
+        }
+    }
+
+    private void confirmModifyPartition(){
+        Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
+        String modifyPartitionName = this.viewManager.getPartitionName();
+
+        if(modifyPartitionName.trim().equals("")){
+            Utilities.showErrorDialog("El nombre de la partición está vacío. Ingrese algún valor");
+        }
+        else if(!partitionToModify.getName().equals(modifyPartitionName) && this.processManager.isAlreadyPartitionName(modifyPartitionName)){
+            Utilities.showErrorDialog("Ya existe una partición con este nombre");
+        }
+        else {
+            Partition newPartition = new Partition(this.viewManager.getPartitionName(), this.viewManager.getPartitionSize());
+            this.processManager.updatePartitions(newPartition, this.viewManager.getIndexDataInTable());
+            this.viewManager.hideCreatePartitionsDialog();
+            this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
+        }
+    }
+
+    private void deletePartition(){
+        if(this.viewManager.getIndexDataInTable() == -1){
+            Utilities.showErrorDialog("Debe seleccionar una partición");
+        }
+        else {
+            int confirmation = Utilities.showConfirmationWarning();
+            if(confirmation == 0){
+                this.processManager.deletePartition(this.viewManager.getIndexDataInTable());
+                this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
+            }
+
+        }
+    }
+
+    private void changeToMenu(){
+        if(this.viewManager.getIsPartitionsMenuActive()){
+            this.viewManager.setPartitionsMenuActive(false);
+
+        }
+        else
+            this.processManager.cleanAllLists();
+        this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+        this.viewManager.changeToMainMenu();
     }
 
 
