@@ -46,6 +46,9 @@ public class Controller implements ActionListener, KeyListener {
             case "AñadirProceso":
                 this.confirmAddProcess();
                 break;
+            case "CancelarAñadirProceso":
+                this.cancelAddProcess();
+                break;
             case "Salir":
                 System.exit(0);
                 break;
@@ -123,6 +126,9 @@ public class Controller implements ActionListener, KeyListener {
         }
     }
 
+    private void cancelAddProcess(){
+        this.viewManager.hideCreateAndModifyProcessDialog();
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
