@@ -94,6 +94,12 @@ public class ViewManager extends JFrame {
         this.panelTable.setTableProcess(defaultTableModel);
     }
 
+    public void setValuesToTableReport(Object[][] list, String title) {
+        DefaultTableModel defaultTableModel = new DefaultTableModel(list, ConstantsGUI.HEADERS_WITH_PARTITION);
+        this.panelTable.changeTitle(title);
+        this.panelTable.setTableProcess(defaultTableModel);
+    }
+
 
     public void showCreateProcessDialog(){
         this.dialogCreateProcess.changeButtonToCreate();
@@ -225,24 +231,24 @@ public class ViewManager extends JFrame {
         this.setValuesToTable(this.readyList, "Procesos Listos");
     }
     public void setValuesToCanExecReport(){
-        this.setValuesToTable(this.canExecList, "Procesos Ejecutados");
+        this.setValuesToTableReport(this.canExecList, "Procesos Ejecutados");
     }
     public void setValuesToDispatchReport(){
-        this.setValuesToTable(this.dispatchList, "Procesos Despachados");
+        this.setValuesToTableReport(this.dispatchList, "Procesos Despachados");
     }
 
     public void setValuesToExecReport(){
-        this.setValuesToTable(this.executionList, "Procesos en Ejecución");
+        this.setValuesToTableReport(this.executionList, "Procesos en Ejecución");
     }
 
     public void setValuesToExepReport(){
-        this.setValuesToTable(this.expirationList, "Procesos Expirados");
+        this.setValuesToTableReport(this.expirationList, "Procesos Expirados");
     }
     public void setValuesToFinishedReport(){
-        this.setValuesToTable(this.finishedList, "Procesos Finalizados");
+        this.setValuesToTableReport(this.finishedList, "Procesos Finalizados");
     }
     public void setValuesToNoExecReport(){
-        this.setValuesToTable(this.noExecutionList, "Procesos No Ejecutados");
+        this.setValuesToTableReport(this.noExecutionList, "Procesos No Ejecutados");
     }
 
 }
