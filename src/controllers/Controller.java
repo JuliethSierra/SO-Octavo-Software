@@ -49,6 +49,12 @@ public class Controller implements ActionListener, KeyListener {
             case "CancelarAñadirProceso":
                 this.cancelAddProcess();
                 break;
+            case "ModificarProceso":
+                this.showModifyProcessDialog();
+                break;
+            case "ConfirmarModificacionProceso":
+                this.confirmModifyProcess();
+                break;
             case "Salir":
                 System.exit(0);
                 break;
@@ -129,6 +135,46 @@ public class Controller implements ActionListener, KeyListener {
     private void cancelAddProcess(){
         this.viewManager.hideCreateAndModifyProcessDialog();
     }
+
+    private void showModifyProcessDialog(){
+        if(this.viewManager.getIndexDataInTable() == -1){
+            Utilities.showErrorDialog("Debe seleccionar un proceso");
+        }
+        else {
+            Process processToModify = this.processManager.getProcessInQueue(this.viewManager.getIndexDataInTable());
+            this.viewManager.setProcessName(processToModify.getName());
+            this.viewManager.setProcessTime(processToModify.getTime());
+            this.viewManager.setProcessSize(processToModify.getSize());
+            this.viewManager.showModifyProcessDialog();
+        }
+    }
+
+    private void confirmModifyProcess(){
+        Process processToModify = this.processManager.getProcessInQueue(this.viewManager.getIndexDataInTable());
+        String modifyNameProcess = this.viewManager.getProcessName();
+
+        if(modifyNameProcess.trim().equals("")){
+            Utilities.showErrorDialog("El nombre del proceso está vacío. Ingrese algún valor");
+        }
+        else if(!processToModify.getName().equals(modifyNameProcess)
+                && this.processManager.isAlreadyProcessName(modifyNameProcess)){
+            Utilities.showErrorDialog("Ya existe un proceso con este nombre en esta partición");
+        }
+        else if(this.viewManager.getProcessTime().toString().trim().equals("-1")){
+            Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
+        }
+        else if(this.viewManager.getProcessSize().toString().trim().equals("-1")){
+            Utilities.showErrorDialog("El tamaño del proceso está vacío. Ingrese un valor numérico entero");
+        }
+        else {
+            Process newProcess = new Process(this.viewManager.getProcessName(), this.viewManager.getProcessTime(), this.viewManager.getProcessSize());
+            this.processManager.updateProcessInQueue(newProcess, this.viewManager.getIndexDataInTable());
+            this.viewManager.hideCreateAndModifyProcessDialog();
+            this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+        }
+    }
+
+
 
     @Override
     public void keyTyped(KeyEvent e) {

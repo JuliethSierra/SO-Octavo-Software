@@ -178,6 +178,13 @@ public class ProcessManager {
         return processList;
     }
 
+    public Process getProcessInQueue(int indexDataInTable) {
+        return this.inQueue.get(indexDataInTable);
+    }
+
+    public void updateProcessInQueue(Process newProcess, int indexDataInTable) {
+        this.inQueue.set(indexDataInTable, newProcess);
+    }
 
 
     public void addToInQueue(Process process){
