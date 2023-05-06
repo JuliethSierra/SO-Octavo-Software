@@ -1,5 +1,7 @@
 package controllers;
 
+import models.Partition;
+import models.Process;
 import models.ProcessManager;
 import views.Utilities;
 import views.ViewManager;
@@ -37,6 +39,15 @@ public class Controller implements ActionListener, KeyListener {
                 break;
             case "CancelarParticion":
                 this.cancelAddPartition();
+                break;
+            case "CrearProceso":
+                this.showCreateProcessDialog();
+                break;
+            case "AñadirProceso":
+                this.confirmAddProcess();
+                break;
+            case "Salir":
+                System.exit(0);
                 break;
         }
 
@@ -76,6 +87,40 @@ public class Controller implements ActionListener, KeyListener {
 
         else
             Utilities.showErrorDialog("Debe ingresar al menos una partición");
+    }
+
+    private void showCreateProcessDialog(){
+        if(this.processManager.getPartitions().size() == 0){
+            Utilities.showErrorDialog("Debe tener al menos una partición para poder crear procesos");
+        }
+        else {
+            this.viewManager.showCreateProcessDialog();
+        }
+    }
+
+    private void confirmAddProcess(){
+        String processName = this.viewManager.getProcessName();
+        BigInteger timeProcess = this.viewManager.getProcessTime();
+        BigInteger sizeProcess = this.viewManager.getProcessSize();
+
+        if(processName.trim().isEmpty()){
+            Utilities.showErrorDialog("El nombre del proceso está vacío. Ingrese algún valor");
+        }
+        else if(this.processManager.isAlreadyProcessName(processName)){
+            Utilities.showErrorDialog("El nombre del proceso ya existe. Ingrese otro nombre");
+        }
+        else if(timeProcess.toString().equals("-1")){
+            Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
+        }
+        else if(sizeProcess.toString().equals("-1")){
+            Utilities.showErrorDialog("El tamaño del proceso está vacío. Ingrese un valor numérico entero");
+        }
+        else{
+            Process newProcess = new Process(processName, timeProcess, sizeProcess);
+            this.processManager.addToInQueue(newProcess);
+            this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+            this.viewManager.hideCreateAndModifyProcessDialog();
+        }
     }
 
 

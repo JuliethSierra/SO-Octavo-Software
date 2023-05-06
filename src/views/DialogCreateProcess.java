@@ -12,11 +12,7 @@ public class DialogCreateProcess extends JDialog {
 
     private JLabel nameProcess, timeProcess, sizeProcess, blockProcess, partition;
     private JTextField inputNameProcess, inputTimeProcess, inputSizeProcess;
-    private JRadioButton yesBlockProcess, noBlockProcess;
-    private ButtonGroup blockProcessGroup;
-    private JPanel panelBlockButtons;
 
-    private JComboBox<String> partitionCombo;
 
 
 
@@ -47,21 +43,9 @@ public class DialogCreateProcess extends JDialog {
         this.inputNameProcess.setFont(ConstantsGUI.FONT_INPUTS);
         Utilities.addComponent(this, this.inputNameProcess, 1, 0);
 
-        this.timeProcess = new JLabel("Tiempo");
-        this.timeProcess.setFont(ConstantsGUI.FONT_TITLE_INPUTS);
-        Utilities.addComponent(this, this.timeProcess, 0, 1);
-
-        this.inputTimeProcess = new JTextField(10);
-        this.inputTimeProcess.addKeyListener(keyListener);
-        this.inputTimeProcess.setSize(100, 50);
-        this.inputTimeProcess.setPreferredSize(new Dimension(100, 30));
-        this.inputTimeProcess.setBackground(Color.WHITE);
-        this.inputTimeProcess.setFont(ConstantsGUI.FONT_INPUTS);
-        Utilities.addComponent(this, this.inputTimeProcess, 1, 1);
-
         this.sizeProcess = new JLabel("Tamaño");
         this.sizeProcess.setFont(ConstantsGUI.FONT_TITLE_INPUTS);
-        Utilities.addComponent(this, this.sizeProcess, 0, 2);
+        Utilities.addComponent(this, this.sizeProcess, 0, 1);
 
         this.inputSizeProcess = new JTextField(10);
         this.inputSizeProcess.addKeyListener(keyListener);
@@ -69,47 +53,19 @@ public class DialogCreateProcess extends JDialog {
         this.inputSizeProcess.setPreferredSize(new Dimension(100, 30));
         this.inputSizeProcess.setBackground(Color.WHITE);
         this.inputSizeProcess.setFont(ConstantsGUI.FONT_INPUTS);
-        Utilities.addComponent(this, this.inputSizeProcess, 1, 2);
+        Utilities.addComponent(this, this.inputSizeProcess, 1, 1);
 
-        this.blockProcess = new JLabel("Bloquear");
-        this.blockProcess.setFont(ConstantsGUI.FONT_TITLE_INPUTS);
-        Utilities.addComponent(this, blockProcess, 0, 3);
+        this.timeProcess = new JLabel("Tiempo");
+        this.timeProcess.setFont(ConstantsGUI.FONT_TITLE_INPUTS);
+        Utilities.addComponent(this, this.timeProcess, 0, 2);
 
-        this.blockProcessGroup = new ButtonGroup();
-
-        this.yesBlockProcess = new JRadioButton("Sí");
-        this.yesBlockProcess.setBackground(Color.decode("#C9ADA7"));
-        this.yesBlockProcess.setForeground(Color.BLACK);
-        this.yesBlockProcess.setFont(ConstantsGUI.FONT_MENU_ACTIONS);
-
-        this.noBlockProcess = new JRadioButton("No");
-        this.noBlockProcess.setBackground(Color.decode("#C9ADA7"));
-        this.noBlockProcess.setForeground(Color.BLACK);
-        this.noBlockProcess.setFont(ConstantsGUI.FONT_MENU_ACTIONS);
-
-        this.blockProcessGroup.add(this.yesBlockProcess);
-        this.blockProcessGroup.add(this.noBlockProcess);
-        this.yesBlockProcess.setSelected(true);
-
-        this.panelBlockButtons = new JPanel();
-        this.panelBlockButtons.setBackground(Color.decode("#C9ADA7"));
-        this.panelBlockButtons.add(this.yesBlockProcess);
-        this.panelBlockButtons.add(this.noBlockProcess);
-
-        Utilities.addComponent(this, this.panelBlockButtons, 1, 3);
-
-        this.partition = new JLabel("Partición");
-        this.partition.setFont(ConstantsGUI.FONT_TITLE_INPUTS);
-        Utilities.addComponent(this, this.partition, 0, 4);
-
-
-        this.partitionCombo = new JComboBox<>();
-        this.partitionCombo.setSize(150, 50);
-        this.partitionCombo.setPreferredSize(new Dimension(150,30));
-        this.partitionCombo.setBackground(Color.WHITE);
-        this.partitionCombo.setFont(ConstantsGUI.FONT_INPUTS);
-
-        Utilities.addComponent(this, this.partitionCombo, 1, 4);
+        this.inputTimeProcess = new JTextField(10);
+        this.inputTimeProcess.addKeyListener(keyListener);
+        this.inputTimeProcess.setSize(100, 50);
+        this.inputTimeProcess.setPreferredSize(new Dimension(100, 30));
+        this.inputTimeProcess.setBackground(Color.WHITE);
+        this.inputTimeProcess.setFont(ConstantsGUI.FONT_INPUTS);
+        Utilities.addComponent(this, this.inputTimeProcess, 1, 2);
 
         this.create = new Button("Añadir");
         this.create.addActionListener(actionListener);
@@ -163,20 +119,6 @@ public class DialogCreateProcess extends JDialog {
         return sizeProcess;
     }
 
-    public void setIsBlock(boolean isBlock){
-        if(isBlock){
-            this.yesBlockProcess.setSelected(true);
-            this.noBlockProcess.setSelected(false);
-        }
-        else{
-            this.yesBlockProcess.setSelected(false);
-            this.noBlockProcess.setSelected(true);
-        }
-    }
-
-    public boolean getIsBlock() {
-        return this.yesBlockProcess.isSelected();
-    }
 
 
 
@@ -194,18 +136,7 @@ public class DialogCreateProcess extends JDialog {
         this.inputNameProcess.setText("");
         this.inputTimeProcess.setText("");
         this.inputSizeProcess.setText("");
-        this.partitionCombo.setSelectedIndex(0);
-        this.yesBlockProcess.setSelected(true);
     }
-
-    public String getSelectedElementFirstCombo(){
-        return (String) this.partitionCombo.getSelectedItem();
-    }
-
-    public void setValuesCombo(String[] values){
-        this.partitionCombo.setModel(new DefaultComboBoxModel<>(values));
-    }
-
 
 
 }
