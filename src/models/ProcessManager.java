@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class ProcessManager {
     private final int PROCESS_TIME = 5;
-    private ArrayList<PartitionReport> dispatchList, executionList, expirationList, finishedList, canExecutionList;
+    private ArrayList<PartitionReport> dispatchList, executionList, expirationList, finishedList, canExecutionList, noExecutionList;
     private ArrayList<Partition> partitions;
 
-    private ArrayList<Process> inQueue, currentList, readyList, noExecutionList;
+    private ArrayList<Process> inQueue, currentList, readyList;
 
     public ProcessManager(){
         this.partitions = new ArrayList<>();
@@ -79,11 +79,11 @@ public class ProcessManager {
         this.finishedList = finishedList;
     }
 
-    public ArrayList<Process> getNoExecutionList() {
+    public ArrayList<PartitionReport> getNoExecutionList() {
         return noExecutionList;
     }
 
-    public void setNoExecutionList(ArrayList<Process> noExecutionList) {
+    public void setNoExecutionList(ArrayList<PartitionReport> noExecutionList) {
         this.noExecutionList = noExecutionList;
     }
 
@@ -132,28 +132,31 @@ public class ProcessManager {
         this.copyToCanExecutionProcess();
         this.initLoadToReady();
         this.initPartitions();
-        for (int i = 0; i < readyList.size(); i++) {
-            for (int j = 0; j < partitions.size(); j++) {
-                if((readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == -1) || (readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == 0)){
-                    this.loadToDispatchQueue(new PartitionReport(partitions.get(i).getName(), new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
+            for (int i = 0; i < readyList.size(); i++) {
+                for (int j = 0; j < partitions.size(); j++) {
+                if ((readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == -1) || (readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == 0)) {
+                    this.loadToDispatchQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
                     if (readyList.get(i).getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1 || readyList.get(i).getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 0) {
-                        this.loadToExecQueue(new PartitionReport(partitions.get(i).getName(), new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize())));
+                        this.loadToExecQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize())));
                     } else {
-                        this.loadToExecQueue(new PartitionReport(partitions.get(i).getName(), new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
+                        this.loadToExecQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
                     }
                     if (!(readyList.get(i).getTime().compareTo(BigInteger.valueOf(0)) == 0)) {
-                        if(readyList.get(i).getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1){
-                            this.loadToExpirationQueue(new PartitionReport(partitions.get(i).getName(), new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize())));
+                        if (readyList.get(i).getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1) {
+                            this.loadToExpirationQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize())));
                             this.loadToReadyQueue(new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize()));
+
                         } else {
-                            this.loadToFinishedQueue(new PartitionReport(partitions.get(i).getName(), new Process(readyList.get(i).getName(), BigInteger.valueOf(0), readyList.get(i).getSize())));
+                            this.loadToFinishedQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), BigInteger.valueOf(0), readyList.get(i).getSize())));
                         }
+
                     }else {
-                        this.loadToFinishedQueue(new PartitionReport(partitions.get(i).getName(), new Process(readyList.get(i).getName(), BigInteger.valueOf(0), readyList.get(i).getSize())));
-                        return;
+                        this.loadToFinishedQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), BigInteger.valueOf(0), readyList.get(i).getSize())));
                     }
-                } else {
-                    this.loadToNoExecQueue(new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize()));
+                    j= partitions.size();
+                }
+                else {
+                    this.loadToNoExecQueue(new PartitionReport(partitions.get(j).getName(),new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
                 }
             }
         }
@@ -161,12 +164,12 @@ public class ProcessManager {
 
     private void loadToReadyQueue(Process process) {
         this.readyList.add(process);
-        System.out.println("ready " + readyList.toString());
+        //System.out.println("ready " + readyList.toString());
     }
 
     private void loadToDispatchQueue(PartitionReport partitionReport) {
         this.dispatchList.add(partitionReport);
-        System.out.println("dispatch " + dispatchList.toString());
+        //System.out.println("dispatch " + dispatchList.toString());
     }
     private void loadToExecQueue(PartitionReport process) {
         this.executionList.add(process);
@@ -174,14 +177,14 @@ public class ProcessManager {
     }
     private void loadToExpirationQueue(PartitionReport process) {
         this.expirationList.add(process);
-        System.out.println("expiration " + expirationList.toString());
+        //System.out.println("expiration " + expirationList.toString());
     }
     private void loadToFinishedQueue(PartitionReport process) {
         this.finishedList.add(process);
         System.out.println("finish " + finishedList.toString());
     }
 
-    private void loadToNoExecQueue(Process process) {
+    private void loadToNoExecQueue(PartitionReport process) {
         this.noExecutionList.add(process);
         System.out.println("noExec " + noExecutionList.toString());
     }
