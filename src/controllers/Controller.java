@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigInteger;
-import java.security.Key;
 
 public class Controller implements ActionListener, KeyListener {
     private ProcessManager processManager;
@@ -24,9 +23,6 @@ public class Controller implements ActionListener, KeyListener {
         //this.initSimulation();
     }
 
-    private void initSimulation(){
-        processManager.initSimulation();
-    }
     public static void main(String[] args) {
         new Controller();
     }
@@ -75,21 +71,32 @@ public class Controller implements ActionListener, KeyListener {
             case "Reportes":
                 this.changeToReportMenu();
                 break;
+            case "Enviar":
+                this.initSimulation();
+                break;
             case "Actuales":
+                this.setValuesToCurrentProcess();
                 break;
             case "Ejecutados":
+                this.setValuesToCanExecReport();
                 break;
             case "Listos":
+                this.setValuesToReadyReport();
                 break;
             case "Despachados":
+                this.setValuesToDispatchReport();
                 break;
             case "Ejecucion":
+                this.setValuesToExecReport();
                 break;
             case "Expirados":
+                this.setValuesToExepReport();
                 break;
             case "Finalizados":
+                this.setValuesToFinishedReport();
                 break;
             case "NoEjecutados":
+                this.setValuesToNoExecReport();
                 break;
             case "Atras":
                 this.changeToMenu();
@@ -99,6 +106,27 @@ public class Controller implements ActionListener, KeyListener {
                 break;
         }
 
+    }
+
+    private void initSimulation(){
+        if(this.processManager.getInQueue().size() == 0){
+            Utilities.showErrorDialog("Debe ingresar al menos un proceso para iniciar la simulación");
+        }
+        else {
+            int response = Utilities.showConfirmationWarning();
+            if(response == 0){
+                processManager.initSimulation();
+                Utilities.showDoneCPUProcess();
+                processManager.cleanQueueList();
+                processManager.copyToCurrentProcess();
+                this.cleanMainTableProcess();
+                this.loadReportList();
+            }
+        }
+    }
+
+    private void cleanMainTableProcess(){
+        this.viewManager.setValuesToTable(processManager.getProcessListAsMatrixObject(processManager.getInQueue()), "Procesos Existentes");
     }
 
     private void addPartition() {
@@ -298,16 +326,54 @@ public class Controller implements ActionListener, KeyListener {
     private void changeToReportMenu(){
         this.viewManager.changeToReportMenu();
         this.viewManager.setValuesToCurrentProcess();
-     /*   if(this.processManager.getReadyList().size() != 0){
+        if(this.processManager.getReadyList().size() != 0){
             this.viewManager.changeToReportMenu();
             this.viewManager.setValuesToCurrentProcess();
         }
         else {
             Utilities.showErrorDialog("Debe iniciar la simulación antes de ver los reportes");
-        }*/
+        }
 
     }
 
+    private void loadReportList(){
+        viewManager.setCurrentList(processManager.getProcessListAsMatrixObject(processManager.getCurrentList()));
+        viewManager.setCanExecList(processManager.getProcessListAsMatrixReportObject(processManager.getCanExecutionList()));
+        viewManager.setInQueueList(processManager.getProcessListAsMatrixObject(processManager.getInQueue()));
+        viewManager.setReadyList(processManager.getProcessListAsMatrixObject(processManager.getReadyList()));
+        viewManager.setDispatchList(processManager.getProcessListAsMatrixReportObject(processManager.getDispatchList()));
+        viewManager.setExecutionList(processManager.getProcessListAsMatrixReportObject(processManager.getExecutionList()));
+        viewManager.setExpirationList(processManager.getProcessListAsMatrixReportObject(processManager.getExpirationList()));
+        viewManager.setFinishedList(processManager.getProcessListAsMatrixReportObject(processManager.getFinishedList()));
+        viewManager.setNoExecutionList(processManager.getProcessListAsMatrixReportObject(processManager.getNoExecutionList()));
+    }
+
+    public void setValuesToCurrentProcess(){
+        this.viewManager.setValuesToCurrentProcess();
+    }
+    public void setValuesToReadyReport(){
+        this.viewManager.setValuesToReadyReport();
+    }
+    public void setValuesToCanExecReport(){
+        this.viewManager.setValuesToCanExecReport();
+    }
+    public void setValuesToDispatchReport(){
+        this.viewManager.setValuesToDispatchReport();
+    }
+
+    public void setValuesToExecReport(){
+        this.viewManager.setValuesToExecReport();
+    }
+
+    public void setValuesToExepReport(){
+        this.viewManager.setValuesToExepReport();
+    }
+    public void setValuesToFinishedReport(){
+        this.viewManager.setValuesToFinishedReport();
+    }
+    public void setValuesToNoExecReport(){
+        this.viewManager.setValuesToNoExecReport();
+    }
     @Override
     public void keyTyped(KeyEvent e) {
         char c = e.getKeyChar();

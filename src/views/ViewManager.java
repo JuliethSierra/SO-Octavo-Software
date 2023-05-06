@@ -16,7 +16,7 @@ public class ViewManager extends JFrame {
     private DialogCreateProcess dialogCreateProcess;
     private DialogCreateInitialPartitions dialogCreateInitialPartitions;
 
-    private Object[][] inQueue, currentList, readyList, dispatchList, executionList, expirationList, finishedList, noExecutionList;
+    private Object[][] inQueue, currentList, canExecList, readyList, dispatchList, executionList, expirationList, finishedList, noExecutionList;
 
 
     private boolean isPartitionsMenuActive = false;
@@ -189,8 +189,60 @@ public class ViewManager extends JFrame {
         SwingUtilities.updateComponentTreeUI(this);
     }
 
+    public void setCurrentList(Object[][] currentList) {
+        this.currentList = currentList;
+    }
+    public void setInQueueList(Object[][] inQueue) {
+        this.inQueue = inQueue;
+    }
+
+    public void setCanExecList(Object[][] inQueue) {
+        this.canExecList = inQueue;
+    }
+    public void setReadyList(Object[][] readyList) {
+        this.readyList = readyList;
+    }
+    public void setDispatchList(Object[][] dispatchList) {
+        this.dispatchList = dispatchList;
+    }
+    public void setExecutionList(Object[][] executionList) {
+        this.executionList = executionList;
+    }
+    public void setExpirationList(Object[][] expirationList) {
+        this.expirationList = expirationList;
+    }
+    public void setFinishedList(Object[][] finishedList) {
+        this.finishedList = finishedList;
+    }
+    public void setNoExecutionList(Object[][] noExecutionList) {
+        this.noExecutionList = noExecutionList;
+    }
+
     public void setValuesToCurrentProcess(){
         this.setValuesToTable(this.currentList, "Procesos Actuales");
+    }
+    public void setValuesToReadyReport(){
+        this.setValuesToTable(this.readyList, "Procesos Listos");
+    }
+    public void setValuesToCanExecReport(){
+        this.setValuesToTable(this.canExecList, "Procesos Ejecutados");
+    }
+    public void setValuesToDispatchReport(){
+        this.setValuesToTable(this.dispatchList, "Procesos Despachados");
+    }
+
+    public void setValuesToExecReport(){
+        this.setValuesToTable(this.executionList, "Procesos en Ejecución");
+    }
+
+    public void setValuesToExepReport(){
+        this.setValuesToTable(this.expirationList, "Procesos Expirados");
+    }
+    public void setValuesToFinishedReport(){
+        this.setValuesToTable(this.finishedList, "Procesos Finalizados");
+    }
+    public void setValuesToNoExecReport(){
+        this.setValuesToTable(this.noExecutionList, "Procesos No Ejecutados");
     }
 
 }
