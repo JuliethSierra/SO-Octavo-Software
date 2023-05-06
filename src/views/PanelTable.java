@@ -19,7 +19,7 @@ public class PanelTable extends JPanel {
     private void initComponents(){
         this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
         this.setBackground(Color.WHITE);
-        String[] headers  = ConstantsGUI.HEADERS;
+        String[] headers  = ConstantsGUI.HEADERS_WITHOUT_PARTITION;
         this.modelTable = new DefaultTableModel();
         this.modelTable.setColumnIdentifiers(headers);
 

@@ -34,8 +34,8 @@ public class ProcessManager {
     }
 
     public boolean isAlreadyProcessName(String name){
-        for(Partition partition: partitions){
-            if(partition.getName().equals(name))
+        for(Process process: inQueue){
+            if(process.getName().equals(name))
                 return true;
         }
         return false;
