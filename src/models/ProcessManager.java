@@ -23,85 +23,7 @@ public class ProcessManager {
         this.canExecutionList = new ArrayList<>();
     }
 
-    public ArrayList<Process> getInQueue() {
-        return inQueue;
-    }
 
-    public void setInQueue(ArrayList<Process> inQueue) {
-        this.inQueue = inQueue;
-    }
-
-    public ArrayList<Process> getCurrentList() {
-        return currentList;
-    }
-
-    public void setCurrentList(ArrayList<Process> currentList) {
-        this.currentList = currentList;
-    }
-
-    public ArrayList<Process> getReadyList() {
-        return readyList;
-    }
-
-    public void setReadyList(ArrayList<Process> readyList) {
-        this.readyList = readyList;
-    }
-
-    public ArrayList<PartitionReport> getDispatchList() {
-        return dispatchList;
-    }
-
-    public void setDispatchList(ArrayList<PartitionReport> dispatchList) {
-        this.dispatchList = dispatchList;
-    }
-
-    public ArrayList<PartitionReport> getExecutionList() {
-        return executionList;
-    }
-
-    public void setExecutionList(ArrayList<PartitionReport> executionList) {
-        this.executionList = executionList;
-    }
-
-    public ArrayList<PartitionReport> getExpirationList() {
-        return expirationList;
-    }
-
-    public void setExpirationList(ArrayList<PartitionReport> expirationList) {
-        this.expirationList = expirationList;
-    }
-
-    public ArrayList<PartitionReport> getFinishedList() {
-        return finishedList;
-    }
-
-    public void setFinishedList(ArrayList<PartitionReport> finishedList) {
-        this.finishedList = finishedList;
-    }
-
-    public ArrayList<Process> getNoExecutionList() {
-        return noExecutionList;
-    }
-
-    public void setNoExecutionList(ArrayList<Process> noExecutionList) {
-        this.noExecutionList = noExecutionList;
-    }
-
-    public ArrayList<PartitionReport> getCanExecutionList() {
-        return canExecutionList;
-    }
-
-    public void setCanExecutionList(ArrayList<PartitionReport> canExecutionList) {
-        this.canExecutionList = canExecutionList;
-    }
-
-    public ArrayList<Partition> getPartitions() {
-        return partitions;
-    }
-
-    public void setPartitions(ArrayList<Partition> partitions) {
-        this.partitions = partitions;
-    }
 
     public boolean isAlreadyPartitionName(String name){
         for(Partition partition: partitions){
@@ -123,9 +45,6 @@ public class ProcessManager {
         this.partitions.add(new Partition(partitionName, partitionSize));
     }
 
-    public void addToInQueue(Process process){
-        this.inQueue.add(process);
-    }
 
     public void initSimulation(){
         this.copyToCurrentProcess();
@@ -205,6 +124,7 @@ public class ProcessManager {
         System.out.println("canExec " + canExecutionList.toString());
     }
 
+
     private void initLoadToReady() {
         //readyList.addAll(inQueue);
         readyList.add(new Process("p1",new BigInteger("10"), new BigInteger("10")));
@@ -219,5 +139,128 @@ public class ProcessManager {
         partitions.add(new Partition("part1", new BigInteger("10")));
         partitions.add(new Partition("part2", new BigInteger("20")));
         partitions.add(new Partition("part3", new BigInteger("30")));
+    }
+
+
+
+    public Object[][] getPartitionsListAsMatrixObject(ArrayList<Partition> list){
+        return this.parseArrayPartitionListToMatrixObject(list);
+    }
+
+    private Object[][] parseArrayPartitionListToMatrixObject(ArrayList<Partition> list){
+        int sizeQueue = list.size();
+        Object[][] processList = new Object[sizeQueue][5];
+
+        for(int i = 0; i < sizeQueue; i++){
+            processList[i][0] = list.get(i).getName();
+            processList[i][1] = list.get(i).getSize();
+        }
+        return processList;
+    }
+
+    public int getPartitionsSize(){
+        return this.partitions.size();
+    }
+
+    public Object[][] getProcessListAsMatrixObject(ArrayList<Process> list){
+        return this.parseArrayListToMatrixObject(list);
+    }
+
+    private Object[][] parseArrayListToMatrixObject(ArrayList<Process> list){
+        int sizeQueue = list.size();
+        Object[][] processList = new Object[sizeQueue][5];
+
+        for(int i = 0; i < sizeQueue; i++){
+            processList[i][0] = list.get(i).getName();
+            processList[i][1] = list.get(i).getTime();
+            processList[i][2] = list.get(i).getSize();
+        }
+        return processList;
+    }
+
+
+
+    public void addToInQueue(Process process){
+        this.inQueue.add(process);
+    }
+
+    public ArrayList<Process> getInQueue() {
+        return inQueue;
+    }
+
+    public void setInQueue(ArrayList<Process> inQueue) {
+        this.inQueue = inQueue;
+    }
+
+    public ArrayList<Process> getCurrentList() {
+        return currentList;
+    }
+
+    public void setCurrentList(ArrayList<Process> currentList) {
+        this.currentList = currentList;
+    }
+
+    public ArrayList<Process> getReadyList() {
+        return readyList;
+    }
+
+    public void setReadyList(ArrayList<Process> readyList) {
+        this.readyList = readyList;
+    }
+
+    public ArrayList<PartitionReport> getDispatchList() {
+        return dispatchList;
+    }
+
+    public void setDispatchList(ArrayList<PartitionReport> dispatchList) {
+        this.dispatchList = dispatchList;
+    }
+
+    public ArrayList<PartitionReport> getExecutionList() {
+        return executionList;
+    }
+
+    public void setExecutionList(ArrayList<PartitionReport> executionList) {
+        this.executionList = executionList;
+    }
+
+    public ArrayList<PartitionReport> getExpirationList() {
+        return expirationList;
+    }
+
+    public void setExpirationList(ArrayList<PartitionReport> expirationList) {
+        this.expirationList = expirationList;
+    }
+
+    public ArrayList<PartitionReport> getFinishedList() {
+        return finishedList;
+    }
+
+    public void setFinishedList(ArrayList<PartitionReport> finishedList) {
+        this.finishedList = finishedList;
+    }
+
+    public ArrayList<Process> getNoExecutionList() {
+        return noExecutionList;
+    }
+
+    public void setNoExecutionList(ArrayList<Process> noExecutionList) {
+        this.noExecutionList = noExecutionList;
+    }
+
+    public ArrayList<PartitionReport> getCanExecutionList() {
+        return canExecutionList;
+    }
+
+    public void setCanExecutionList(ArrayList<PartitionReport> canExecutionList) {
+        this.canExecutionList = canExecutionList;
+    }
+
+    public ArrayList<Partition> getPartitions() {
+        return partitions;
+    }
+
+    public void setPartitions(ArrayList<Partition> partitions) {
+        this.partitions = partitions;
     }
 }
