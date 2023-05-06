@@ -23,6 +23,70 @@ public class ProcessManager {
         this.canExecutionList = new ArrayList<>();
     }
 
+    public Object[][] getPartitionsListAsMatrixObject(ArrayList<Partition> list){
+        return this.parseArrayPartitionListToMatrixObject(list);
+    }
+
+    private Object[][] parseArrayPartitionListToMatrixObject(ArrayList<Partition> list){
+        int sizeQueue = list.size();
+        Object[][] processList = new Object[sizeQueue][5];
+
+        for(int i = 0; i < sizeQueue; i++){
+            processList[i][0] = list.get(i).getName();
+            processList[i][1] = list.get(i).getSize();
+        }
+        return processList;
+    }
+
+    public int getPartitionsSize(){
+        return this.partitions.size();
+    }
+
+    public Object[][] getProcessListAsMatrixObject(ArrayList<Process> list){
+        return this.parseArrayListToMatrixObject(list);
+    }
+
+    private Object[][] parseArrayListToMatrixObject(ArrayList<Process> list){
+        int sizeQueue = list.size();
+        Object[][] processList = new Object[sizeQueue][5];
+
+        for(int i = 0; i < sizeQueue; i++){
+            processList[i][0] = list.get(i).getName();
+            processList[i][1] = list.get(i).getTime();
+            processList[i][2] = list.get(i).getSize();
+        }
+        return processList;
+    }
+
+    public void updatePartitions(Partition newPartition, int indexDataInTable) {
+        this.partitions.set(indexDataInTable, newPartition);
+    }
+
+    public void deletePartition(int indexDataInTable) {
+        this.partitions.remove(indexDataInTable);
+    }
+
+    public void cleanAllLists(){
+
+    }
+
+    public Partition getPartitionByIndex(int indexDataInTable) {
+        return this.partitions.get(indexDataInTable);
+    }
+
+
+    public Process getProcessInQueue(int indexDataInTable) {
+        return this.inQueue.get(indexDataInTable);
+    }
+
+    public void updateProcessInQueue(Process newProcess, int indexDataInTable) {
+        this.inQueue.set(indexDataInTable, newProcess);
+    }
+
+    public void deleteProcessInQueue(int indexDataInTable) {
+        this.inQueue.remove(indexDataInTable);
+    }
+
     public ArrayList<Process> getInQueue() {
         return inQueue;
     }
