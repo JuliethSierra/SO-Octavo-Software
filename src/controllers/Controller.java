@@ -55,6 +55,9 @@ public class Controller implements ActionListener, KeyListener {
             case "ConfirmarModificacionProceso":
                 this.confirmModifyProcess();
                 break;
+            case "EliminarProceso":
+                this.deleteProcess();
+                break;
             case "Salir":
                 System.exit(0);
                 break;
@@ -174,6 +177,20 @@ public class Controller implements ActionListener, KeyListener {
         }
     }
 
+    private void deleteProcess(){
+        if(this.viewManager.getIndexDataInTable() == -1){
+            Utilities.showErrorDialog("Debe seleccionar un proceso");
+        }
+        else {
+            int confirmation = Utilities.showConfirmationWarning();
+            if(confirmation == 0){
+                this.processManager.deleteProcessInQueue(this.viewManager.getIndexDataInTable());
+                this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+            }
+
+        }
+
+    }
 
 
     @Override
