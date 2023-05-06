@@ -58,6 +58,23 @@ public class ProcessManager {
         return processList;
     }
 
+    public Object[][] getProcessListAsMatrixReportObject(ArrayList<PartitionReport> list){
+        return this.parseArrayListToMatrixReportObject(list);
+    }
+
+    private Object[][] parseArrayListToMatrixReportObject(ArrayList<PartitionReport> list){
+        int sizeQueue = list.size();
+        Object[][] processList = new Object[sizeQueue][5];
+
+        for(int i = 0; i < sizeQueue; i++){
+            processList[i][0] = list.get(i).getPartitionName();
+            processList[i][1] = list.get(i).getProcess().getName();
+            processList[i][2] = list.get(i).getProcess().getTime();
+            processList[i][2] = list.get(i).getProcess().getSize();
+        }
+        return processList;
+    }
+
     public void updatePartitions(Partition newPartition, int indexDataInTable) {
         this.partitions.set(indexDataInTable, newPartition);
     }
@@ -67,7 +84,15 @@ public class ProcessManager {
     }
 
     public void cleanAllLists(){
-
+        this.inQueue.clear();
+        this.currentList.clear();
+        this.readyList.clear();
+        this.dispatchList.clear();
+        this.executionList.clear();
+        this.expirationList.clear();
+        this.finishedList.clear();
+        this.noExecutionList.clear();
+        this.canExecutionList.clear();
     }
 
     public Partition getPartitionByIndex(int indexDataInTable) {
@@ -195,7 +220,6 @@ public class ProcessManager {
         this.copyToCurrentProcess();
         this.copyToCanExecutionProcess();
         this.initLoadToReady();
-        this.initPartitions();
             for (int i = 0; i < readyList.size(); i++) {
                 for (int j = 0; j < partitions.size(); j++) {
                 if ((readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == -1) || (readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == 0)) {
@@ -228,29 +252,23 @@ public class ProcessManager {
 
     private void loadToReadyQueue(Process process) {
         this.readyList.add(process);
-        //System.out.println("ready " + readyList.toString());
     }
 
     private void loadToDispatchQueue(PartitionReport partitionReport) {
         this.dispatchList.add(partitionReport);
-        //System.out.println("dispatch " + dispatchList.toString());
     }
     private void loadToExecQueue(PartitionReport process) {
         this.executionList.add(process);
-        System.out.println("execution " + executionList.toString() + "\n");
     }
     private void loadToExpirationQueue(PartitionReport process) {
         this.expirationList.add(process);
-        //System.out.println("expiration " + expirationList.toString());
     }
     private void loadToFinishedQueue(PartitionReport process) {
         this.finishedList.add(process);
-        System.out.println("finish " + finishedList.toString());
     }
 
     private void loadToNoExecQueue(PartitionReport process) {
         this.noExecutionList.add(process);
-        System.out.println("noExec " + noExecutionList.toString());
     }
 
     private BigInteger consumeTimeProcess(Process process) {
@@ -273,18 +291,10 @@ public class ProcessManager {
     }
 
     private void initLoadToReady() {
-        //readyList.addAll(inQueue);
-        readyList.add(new Process("p1",new BigInteger("10"), new BigInteger("10")));
-        readyList.add(new Process("p2",new BigInteger("10"), new BigInteger("30")));
-        readyList.add(new Process("p3",new BigInteger("10"), new BigInteger("10")));
-        readyList.add(new Process("p4",new BigInteger("10"), new BigInteger("20")));
-        readyList.add(new Process("p5",new BigInteger("10"), new BigInteger("10")));
-        readyList.add(new Process("p6",new BigInteger("10"), new BigInteger("100")));
+        readyList.addAll(inQueue);
     }
 
-    private void initPartitions() {
-        partitions.add(new Partition("part1", new BigInteger("10")));
-        partitions.add(new Partition("part2", new BigInteger("20")));
-        partitions.add(new Partition("part3", new BigInteger("30")));
+    public void cleanQueueList(){
+        inQueue.clear();
     }
 }
