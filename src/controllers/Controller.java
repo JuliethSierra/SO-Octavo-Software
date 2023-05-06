@@ -324,8 +324,6 @@ public class Controller implements ActionListener, KeyListener {
     }
 
     private void changeToReportMenu(){
-        this.viewManager.changeToReportMenu();
-        this.viewManager.setValuesToCurrentProcess();
         if(this.processManager.getReadyList().size() != 0){
             this.viewManager.changeToReportMenu();
             this.viewManager.setValuesToCurrentProcess();

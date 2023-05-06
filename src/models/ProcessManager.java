@@ -70,7 +70,7 @@ public class ProcessManager {
             processList[i][0] = list.get(i).getPartitionName();
             processList[i][1] = list.get(i).getProcess().getName();
             processList[i][2] = list.get(i).getProcess().getTime();
-            processList[i][2] = list.get(i).getProcess().getSize();
+            processList[i][3] = list.get(i).getProcess().getSize();
         }
         return processList;
     }
@@ -277,17 +277,15 @@ public class ProcessManager {
 
     public void copyToCurrentProcess(){
         currentList.addAll(inQueue);
-        System.out.println(currentList.toString());
     }
     public void copyToCanExecutionProcess(){
-        for (int j = 0; j < partitions.size(); j++) {
-            for (int i = 0; i < inQueue.size(); i++) {
+        for (int i = 0; i < inQueue.size(); i++) {
+            for (int j = 0; j < partitions.size(); j++) {
                     if ((inQueue.get(i).getSize().compareTo(partitions.get(j).getSize()) == -1) || (inQueue.get(i).getSize().compareTo(partitions.get(j).getSize()) == 0)){
                         canExecutionList.add(new PartitionReport(partitions.get(i).getName(),inQueue.get(i)));
                     }
             }
         }
-        System.out.println("canExec " + canExecutionList.toString());
     }
 
     private void initLoadToReady() {
