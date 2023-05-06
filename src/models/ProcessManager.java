@@ -186,6 +186,10 @@ public class ProcessManager {
         this.inQueue.set(indexDataInTable, newProcess);
     }
 
+    public void deleteProcessInQueue(int indexDataInTable) {
+        this.inQueue.remove(indexDataInTable);
+    }
+
 
     public void addToInQueue(Process process){
         this.inQueue.add(process);
