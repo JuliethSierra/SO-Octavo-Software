@@ -80,23 +80,105 @@ public class ViewManager extends JFrame {
     }
 
     public void hideCreatePartitionsDialog(){
+        this.dialogCreateInitialPartitions.cleanAllFields();
+        this.dialogCreateInitialPartitions.changeTextToCRUD();
         this.dialogCreateInitialPartitions.setVisible(false);
     }
 
     public void setValuesToTable(Object[][] list, String title) {
-        Object[][] newQueueList =  this.parseValuesIsBlockAndIsSuspended(list);
-        DefaultTableModel defaultTableModel = new DefaultTableModel(newQueueList, ConstantsGUI.HEADERS);
+        DefaultTableModel defaultTableModel = new DefaultTableModel(list, ConstantsGUI.HEADERS_WITHOUT_PARTITION);
         this.panelTable.changeTitle(title);
         this.panelTable.setTableProcess(defaultTableModel);
     }
 
-    private Object[][] parseValuesIsBlockAndIsSuspended(Object[][] queueList){
-        int size = queueList.length;
-        for(int i = 0; i < size; i++){
-            if(!queueList[i][4].equals("Sí") && !queueList[i][4].equals("No")){
-                queueList[i][4] = queueList[i][4].equals(true) ? "Sí" : "No";
-            }
-        }
-        return queueList;
+
+    public void showCreateProcessDialog(){
+        this.dialogCreateProcess.changeButtonToCreate();
+        this.dialogCreateProcess.setVisible(true);
     }
+
+    public String getProcessName(){
+        return this.dialogCreateProcess.getNameProcess();
+    }
+
+    public BigInteger getProcessTime(){
+        return this.dialogCreateProcess.getTimeProcess();
+    }
+
+    public BigInteger getProcessSize(){
+        return this.dialogCreateProcess.getProcessSize();
+    }
+    public void hideCreateAndModifyProcessDialog(){
+        this.dialogCreateProcess.setVisible(false);
+        this.dialogCreateProcess.cleanAllFields();
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
+    public int getIndexDataInTable(){
+        return this.panelTable.getIndexDataProcess();
+    }
+    public void setProcessName(String processName){
+        this.dialogCreateProcess.setProcessName(processName);
+    }
+    public void setProcessTime(BigInteger processTime){
+        this.dialogCreateProcess.setTimeProcess(processTime);
+    }
+    public void setProcessSize(BigInteger processSize){
+        this.dialogCreateProcess.setProcessSize(processSize);
+    }
+
+    public void showModifyProcessDialog(){
+        this.dialogCreateProcess.changeButtonToModify();
+        this.dialogCreateProcess.setVisible(true);
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
+    public void setPartitionsMenuActive(boolean isActive){
+        this.isPartitionsMenuActive = isActive;
+    }
+
+    public void changeTextInPartitionsMenu() {
+        this.dialogCreateInitialPartitions.changeTextToCRUD();
+    }
+
+    public void changeToPartitionsMenu(){
+        this.remove(this.panelMenu);
+        this.add(this.panelMenuPartitions, BorderLayout.WEST);
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
+    public void showCreatePartitionDialogWithoutTable(){
+        this.dialogCreateInitialPartitions.removeTable();
+        this.dialogCreateInitialPartitions.resizeDialog();
+        this.dialogCreateInitialPartitions.changeTextToCRUD();
+        this.dialogCreateInitialPartitions.setVisible(true);
+    }
+
+    public void setPartitionName(String name) {
+        this.dialogCreateInitialPartitions.setPartitionName(name);
+    }
+
+    public void setPartitionSize(String size) {
+        this.dialogCreateInitialPartitions.setPartitionSize(size);
+    }
+
+    public void showModifyPartitionDialog(){
+        this.dialogCreateInitialPartitions.changeButtonToModify();
+        this.showCreatePartitionDialogWithoutTable();
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
+    public void changeToCreatePartitionTexts(){
+        this.dialogCreateInitialPartitions.changeButtonToCreate();
+    }
+
+
+    public void changeToMainMenu(){
+        this.remove(panelMenuReports);
+        this.remove(panelMenuPartitions);
+        this.add(this.panelMenu, BorderLayout.WEST);
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
+
 }

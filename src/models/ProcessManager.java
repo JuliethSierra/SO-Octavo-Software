@@ -34,8 +34,8 @@ public class ProcessManager {
     }
 
     public boolean isAlreadyProcessName(String name){
-        for(Partition partition: partitions){
-            if(partition.getName().equals(name))
+        for(Process process: inQueue){
+            if(process.getName().equals(name))
                 return true;
         }
         return false;
@@ -178,6 +178,48 @@ public class ProcessManager {
         return processList;
     }
 
+    public void updatePartitions(Partition newPartition, int indexDataInTable) {
+        this.partitions.set(indexDataInTable, newPartition);
+    }
+
+    public void deletePartition(int indexDataInTable) {
+        this.partitions.remove(indexDataInTable);
+    }
+
+    public void cleanAllLists(){
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public Partition getPartitionByIndex(int indexDataInTable) {
+        return this.partitions.get(indexDataInTable);
+    }
+
+
+    public Process getProcessInQueue(int indexDataInTable) {
+        return this.inQueue.get(indexDataInTable);
+    }
+
+    public void updateProcessInQueue(Process newProcess, int indexDataInTable) {
+        this.inQueue.set(indexDataInTable, newProcess);
+    }
+
+    public void deleteProcessInQueue(int indexDataInTable) {
+        this.inQueue.remove(indexDataInTable);
+    }
 
 
     public void addToInQueue(Process process){

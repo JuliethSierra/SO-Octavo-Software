@@ -76,11 +76,16 @@ public class DialogCreateInitialPartitions extends JDialog {
         this.panelCreatePartition.setPartitionSize(size);
     }
 
-    public void changeButtonToModify() {
+    public void changeButtonToModify(){
         this.panelCreatePartition.changeButtonToModify();
+    }
+
+    public void changeButtonToCreate(){
+        this.panelCreatePartition.changeButtonToCreate();
     }
 
     public void changeTextToCRUD() {
         this.panelCreatePartition.changeButtonText();
+        //this.panelCreatePartition.changeButtonToCreate();
     }
 }

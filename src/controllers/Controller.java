@@ -1,5 +1,7 @@
 package controllers;
 
+import models.Partition;
+import models.Process;
 import models.ProcessManager;
 import views.Utilities;
 import views.ViewManager;
@@ -37,6 +39,45 @@ public class Controller implements ActionListener, KeyListener {
                 break;
             case "CancelarParticion":
                 this.cancelAddPartition();
+                break;
+            case "CrearProceso":
+                this.showCreateProcessDialog();
+                break;
+            case "AñadirProceso":
+                this.confirmAddProcess();
+                break;
+            case "CancelarAñadirProceso":
+                this.cancelAddProcess();
+                break;
+            case "ModificarProceso":
+                this.showModifyProcessDialog();
+                break;
+            case "ConfirmarModificacionProceso":
+                this.confirmModifyProcess();
+                break;
+            case "EliminarProceso":
+                this.deleteProcess();
+                break;
+            case "MenuParticiones":
+                this.changeToPartitionsMenu();
+                break;
+            case "CrearParticion":
+                this.showCreatePartitionDialog();
+                break;
+            case "ModificarParticion":
+                this.showModifyPartitionDialog();
+                break;
+            case "ConfirmarModificacionParticion":
+                this.confirmModifyPartition();
+                break;
+            case "EliminarParticion":
+                this.deletePartition();
+                break;
+            case "Atras":
+                this.changeToMenu();
+                break;
+            case "Salir":
+                System.exit(0);
                 break;
         }
 
@@ -76,6 +117,164 @@ public class Controller implements ActionListener, KeyListener {
 
         else
             Utilities.showErrorDialog("Debe ingresar al menos una partición");
+    }
+
+    private void showCreateProcessDialog(){
+        if(this.processManager.getPartitions().size() == 0){
+            Utilities.showErrorDialog("Debe tener al menos una partición para poder crear procesos");
+        }
+        else {
+            this.viewManager.showCreateProcessDialog();
+        }
+    }
+
+    private void confirmAddProcess(){
+        String processName = this.viewManager.getProcessName();
+        BigInteger timeProcess = this.viewManager.getProcessTime();
+        BigInteger sizeProcess = this.viewManager.getProcessSize();
+
+        if(processName.trim().isEmpty()){
+            Utilities.showErrorDialog("El nombre del proceso está vacío. Ingrese algún valor");
+        }
+        else if(this.processManager.isAlreadyProcessName(processName)){
+            Utilities.showErrorDialog("El nombre del proceso ya existe. Ingrese otro nombre");
+        }
+        else if(timeProcess.toString().equals("-1")){
+            Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
+        }
+        else if(sizeProcess.toString().equals("-1")){
+            Utilities.showErrorDialog("El tamaño del proceso está vacío. Ingrese un valor numérico entero");
+        }
+        else{
+            Process newProcess = new Process(processName, timeProcess, sizeProcess);
+            this.processManager.addToInQueue(newProcess);
+            this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+            this.viewManager.hideCreateAndModifyProcessDialog();
+        }
+    }
+
+    private void cancelAddProcess(){
+        this.viewManager.hideCreateAndModifyProcessDialog();
+    }
+
+    private void showModifyProcessDialog(){
+        if(this.viewManager.getIndexDataInTable() == -1){
+            Utilities.showErrorDialog("Debe seleccionar un proceso");
+        }
+        else {
+            Process processToModify = this.processManager.getProcessInQueue(this.viewManager.getIndexDataInTable());
+            this.viewManager.setProcessName(processToModify.getName());
+            this.viewManager.setProcessTime(processToModify.getTime());
+            this.viewManager.setProcessSize(processToModify.getSize());
+            this.viewManager.showModifyProcessDialog();
+        }
+    }
+
+    private void confirmModifyProcess(){
+        Process processToModify = this.processManager.getProcessInQueue(this.viewManager.getIndexDataInTable());
+        String modifyNameProcess = this.viewManager.getProcessName();
+
+        if(modifyNameProcess.trim().equals("")){
+            Utilities.showErrorDialog("El nombre del proceso está vacío. Ingrese algún valor");
+        }
+        else if(!processToModify.getName().equals(modifyNameProcess)
+                && this.processManager.isAlreadyProcessName(modifyNameProcess)){
+            Utilities.showErrorDialog("Ya existe un proceso con este nombre en esta partición");
+        }
+        else if(this.viewManager.getProcessTime().toString().trim().equals("-1")){
+            Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
+        }
+        else if(this.viewManager.getProcessSize().toString().trim().equals("-1")){
+            Utilities.showErrorDialog("El tamaño del proceso está vacío. Ingrese un valor numérico entero");
+        }
+        else {
+            Process newProcess = new Process(this.viewManager.getProcessName(), this.viewManager.getProcessTime(), this.viewManager.getProcessSize());
+            this.processManager.updateProcessInQueue(newProcess, this.viewManager.getIndexDataInTable());
+            this.viewManager.hideCreateAndModifyProcessDialog();
+            this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+        }
+    }
+
+    private void deleteProcess(){
+        if(this.viewManager.getIndexDataInTable() == -1){
+            Utilities.showErrorDialog("Debe seleccionar un proceso");
+        }
+        else {
+            int confirmation = Utilities.showConfirmationWarning();
+            if(confirmation == 0){
+                this.processManager.deleteProcessInQueue(this.viewManager.getIndexDataInTable());
+                this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+            }
+
+        }
+
+    }
+
+    private void changeToPartitionsMenu(){
+        this.viewManager.setPartitionsMenuActive(true);
+        this.viewManager.changeTextInPartitionsMenu();
+        this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
+        this.viewManager.changeToPartitionsMenu();
+    }
+
+    private void showCreatePartitionDialog(){
+        this.viewManager.changeToCreatePartitionTexts();
+        this.viewManager.showCreatePartitionDialogWithoutTable();
+    }
+
+    private void showModifyPartitionDialog(){
+        if(this.viewManager.getIndexDataInTable() == -1){
+            Utilities.showErrorDialog("Debe seleccionar una partición");
+        }
+        else {
+            Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
+            this.viewManager.setPartitionName(partitionToModify.getName());
+            this.viewManager.setPartitionSize(partitionToModify.getSize().toString());
+            this.viewManager.showModifyPartitionDialog();
+        }
+    }
+
+    private void confirmModifyPartition(){
+        Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
+        String modifyPartitionName = this.viewManager.getPartitionName();
+
+        if(modifyPartitionName.trim().equals("")){
+            Utilities.showErrorDialog("El nombre de la partición está vacío. Ingrese algún valor");
+        }
+        else if(!partitionToModify.getName().equals(modifyPartitionName) && this.processManager.isAlreadyPartitionName(modifyPartitionName)){
+            Utilities.showErrorDialog("Ya existe una partición con este nombre");
+        }
+        else {
+            Partition newPartition = new Partition(this.viewManager.getPartitionName(), this.viewManager.getPartitionSize());
+            this.processManager.updatePartitions(newPartition, this.viewManager.getIndexDataInTable());
+            this.viewManager.hideCreatePartitionsDialog();
+            this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
+        }
+    }
+
+    private void deletePartition(){
+        if(this.viewManager.getIndexDataInTable() == -1){
+            Utilities.showErrorDialog("Debe seleccionar una partición");
+        }
+        else {
+            int confirmation = Utilities.showConfirmationWarning();
+            if(confirmation == 0){
+                this.processManager.deletePartition(this.viewManager.getIndexDataInTable());
+                this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
+            }
+
+        }
+    }
+
+    private void changeToMenu(){
+        if(this.viewManager.getIsPartitionsMenuActive()){
+            this.viewManager.setPartitionsMenuActive(false);
+
+        }
+        else
+            this.processManager.cleanAllLists();
+        this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
+        this.viewManager.changeToMainMenu();
     }
 
 
