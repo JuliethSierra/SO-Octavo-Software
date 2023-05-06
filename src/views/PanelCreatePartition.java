@@ -107,6 +107,11 @@ public class PanelCreatePartition extends JPanel {
         this.add.setActionCommand("ConfirmarModificacionParticion");
     }
 
+    public void changeButtonToCreate(){
+        this.add.setText("Crear");
+        this.add.setActionCommand("AñadirParticion");
+    }
+
     public void changeButtonText() {
         this.cancel.setText("Cancelar");
     }
