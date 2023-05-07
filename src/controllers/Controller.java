@@ -278,7 +278,7 @@ public class Controller implements ActionListener, KeyListener {
         }
         else {
             if(this.processManager.getInQueue().size() > 0){
-                Utilities.showErrorDialog("No puede eliminar particiones si existen procesos creados");
+                Utilities.showErrorDialog("No puede modificar particiones si existen procesos creados");
             }
             else {
                 Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
