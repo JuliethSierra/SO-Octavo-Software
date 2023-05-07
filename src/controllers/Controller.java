@@ -68,6 +68,7 @@ public class Controller implements ActionListener, KeyListener {
                 break;
             case "EliminarParticion":
                 this.deletePartition();
+                break;
             case "Reportes":
                 this.changeToReportMenu();
                 break;
