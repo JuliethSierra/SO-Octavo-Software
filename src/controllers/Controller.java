@@ -68,6 +68,7 @@ public class Controller implements ActionListener, KeyListener {
                 break;
             case "EliminarParticion":
                 this.deletePartition();
+                break;
             case "Reportes":
                 this.changeToReportMenu();
                 break;
@@ -100,6 +101,9 @@ public class Controller implements ActionListener, KeyListener {
                 break;
             case "Atras":
                 this.changeToMenu();
+                break;
+            case "ManualUsuario":
+                this.openManual();
                 break;
             case "Salir":
                 System.exit(0);
@@ -273,10 +277,15 @@ public class Controller implements ActionListener, KeyListener {
             Utilities.showErrorDialog("Debe seleccionar una partición");
         }
         else {
-            Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
-            this.viewManager.setPartitionName(partitionToModify.getName());
-            this.viewManager.setPartitionSize(partitionToModify.getSize().toString());
-            this.viewManager.showModifyPartitionDialog();
+            if(this.processManager.getInQueue().size() > 0){
+                Utilities.showErrorDialog("No puede modificar particiones si existen procesos creados");
+            }
+            else {
+                Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
+                this.viewManager.setPartitionName(partitionToModify.getName());
+                this.viewManager.setPartitionSize(partitionToModify.getSize().toString());
+                this.viewManager.showModifyPartitionDialog();
+            }
         }
     }
 
@@ -303,11 +312,17 @@ public class Controller implements ActionListener, KeyListener {
             Utilities.showErrorDialog("Debe seleccionar una partición");
         }
         else {
-            int confirmation = Utilities.showConfirmationWarning();
-            if(confirmation == 0){
-                this.processManager.deletePartition(this.viewManager.getIndexDataInTable());
-                this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
+            if(this.processManager.getInQueue().size() > 0){
+                Utilities.showErrorDialog("No puede eliminar particiones si existen procesos creados");
             }
+            else {
+                int confirmation = Utilities.showConfirmationWarning();
+                if(confirmation == 0){
+                    this.processManager.deletePartition(this.viewManager.getIndexDataInTable());
+                    this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
+                }
+            }
+
 
         }
     }
@@ -321,6 +336,15 @@ public class Controller implements ActionListener, KeyListener {
             this.processManager.cleanAllLists();
         this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
         this.viewManager.changeToMainMenu();
+    }
+
+    private void openManual(){
+        try{
+            java.lang.Process p = Runtime.getRuntime().exec("rundll32 SHELL32.DLL,ShellExec_RunDLL "+"C:\\Users\\Usuario\\Desktop\\SO\\Software\\Renovar - ICETEX 2023-1.pdf");
+        } catch (Exception e){
+            System.out.println("El archivo no se puede abrir");
+        }
+
     }
 
     private void changeToReportMenu(){
