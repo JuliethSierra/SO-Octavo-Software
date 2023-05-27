@@ -70,7 +70,7 @@ public class DialogCreateProcess extends JDialog {
         this.create = new Button("Añadir");
         this.create.addActionListener(actionListener);
         this.create.setActionCommand("AñadirProceso");
-        this.create.setPreferredSize(new Dimension(150, 35));
+        this.create.setPreferredSize(new Dimension(170, 35));
         Utilities.addComponent(this, create, 0, 5);
 
         this.cancel = new Button("Cancelar");

@@ -2,12 +2,12 @@ package models;
 
 import java.math.BigInteger;
 
-public class Partition {
+public class FreeStorage {
 
     private String name;
     private BigInteger size;
 
-    public Partition(String name, BigInteger size) {
+    public FreeStorage(String name, BigInteger size) {
         this.name = name;
         this.size = size;
     }

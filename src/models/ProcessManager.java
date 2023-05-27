@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 public class ProcessManager {
     private final int PROCESS_TIME = 5;
-    private ArrayList<PartitionReport> dispatchList, executionList, expirationList, finishedList, canExecutionList, noExecutionList;
-    private ArrayList<Partition> partitions;
+    private ArrayList<FreeStorageReport> dispatchList, executionList, expirationList, finishedList, canExecutionList, noExecutionList;
+    private ArrayList<FreeStorage> partitions;
 
-    private ArrayList<Process> inQueue, currentList, readyList;
+    private ArrayList<Process> inQueue, currentList, readyList, neverExecutionList;
 
     public ProcessManager(){
         this.partitions = new ArrayList<>();
@@ -21,13 +21,14 @@ public class ProcessManager {
         this.finishedList = new ArrayList<>();
         this.noExecutionList = new ArrayList<>();
         this.canExecutionList = new ArrayList<>();
+        this.neverExecutionList = new ArrayList<>();
     }
 
-    public Object[][] getPartitionsListAsMatrixObject(ArrayList<Partition> list){
+    public Object[][] getPartitionsListAsMatrixObject(ArrayList<FreeStorage> list){
         return this.parseArrayPartitionListToMatrixObject(list);
     }
 
-    private Object[][] parseArrayPartitionListToMatrixObject(ArrayList<Partition> list){
+    private Object[][] parseArrayPartitionListToMatrixObject(ArrayList<FreeStorage> list){
         int sizeQueue = list.size();
         Object[][] processList = new Object[sizeQueue][5];
 
@@ -58,11 +59,11 @@ public class ProcessManager {
         return processList;
     }
 
-    public Object[][] getProcessListAsMatrixReportObject(ArrayList<PartitionReport> list){
+    public Object[][] getProcessListAsMatrixReportObject(ArrayList<FreeStorageReport> list){
         return this.parseArrayListToMatrixReportObject(list);
     }
 
-    private Object[][] parseArrayListToMatrixReportObject(ArrayList<PartitionReport> list){
+    private Object[][] parseArrayListToMatrixReportObject(ArrayList<FreeStorageReport> list){
         int sizeQueue = list.size();
         Object[][] processList = new Object[sizeQueue][5];
 
@@ -75,7 +76,7 @@ public class ProcessManager {
         return processList;
     }
 
-    public void updatePartitions(Partition newPartition, int indexDataInTable) {
+    public void updatePartitions(FreeStorage newPartition, int indexDataInTable) {
         this.partitions.set(indexDataInTable, newPartition);
     }
 
@@ -93,9 +94,10 @@ public class ProcessManager {
         this.finishedList.clear();
         this.noExecutionList.clear();
         this.canExecutionList.clear();
+        this.neverExecutionList.clear();
     }
 
-    public Partition getPartitionByIndex(int indexDataInTable) {
+    public FreeStorage getPartitionByIndex(int indexDataInTable) {
         return this.partitions.get(indexDataInTable);
     }
 
@@ -136,64 +138,72 @@ public class ProcessManager {
         this.readyList = readyList;
     }
 
-    public ArrayList<PartitionReport> getDispatchList() {
+    public ArrayList<FreeStorageReport> getDispatchList() {
         return dispatchList;
     }
 
-    public void setDispatchList(ArrayList<PartitionReport> dispatchList) {
+    public void setDispatchList(ArrayList<FreeStorageReport> dispatchList) {
         this.dispatchList = dispatchList;
     }
 
-    public ArrayList<PartitionReport> getExecutionList() {
+    public ArrayList<FreeStorageReport> getExecutionList() {
         return executionList;
     }
 
-    public void setExecutionList(ArrayList<PartitionReport> executionList) {
+    public void setExecutionList(ArrayList<FreeStorageReport> executionList) {
         this.executionList = executionList;
     }
 
-    public ArrayList<PartitionReport> getExpirationList() {
+    public ArrayList<FreeStorageReport> getExpirationList() {
         return expirationList;
     }
 
-    public void setExpirationList(ArrayList<PartitionReport> expirationList) {
+    public void setExpirationList(ArrayList<FreeStorageReport> expirationList) {
         this.expirationList = expirationList;
     }
 
-    public ArrayList<PartitionReport> getFinishedList() {
+    public ArrayList<FreeStorageReport> getFinishedList() {
         return finishedList;
     }
 
-    public void setFinishedList(ArrayList<PartitionReport> finishedList) {
+    public void setFinishedList(ArrayList<FreeStorageReport> finishedList) {
         this.finishedList = finishedList;
     }
 
-    public ArrayList<PartitionReport> getNoExecutionList() {
+    public ArrayList<FreeStorageReport> getNoExecutionList() {
         return noExecutionList;
     }
 
-    public void setNoExecutionList(ArrayList<PartitionReport> noExecutionList) {
+    public void setNoExecutionList(ArrayList<FreeStorageReport> noExecutionList) {
         this.noExecutionList = noExecutionList;
     }
 
-    public ArrayList<PartitionReport> getCanExecutionList() {
+    public ArrayList<FreeStorageReport> getCanExecutionList() {
         return canExecutionList;
     }
 
-    public void setCanExecutionList(ArrayList<PartitionReport> canExecutionList) {
+    public void setCanExecutionList(ArrayList<FreeStorageReport> canExecutionList) {
         this.canExecutionList = canExecutionList;
     }
 
-    public ArrayList<Partition> getPartitions() {
+    public ArrayList<FreeStorage> getPartitions() {
         return partitions;
     }
 
-    public void setPartitions(ArrayList<Partition> partitions) {
+    public void setPartitions(ArrayList<FreeStorage> partitions) {
         this.partitions = partitions;
     }
 
+    public ArrayList<Process> getNeverExecutionList() {
+        return neverExecutionList;
+    }
+
+    public void setNeverExecutionList(ArrayList<Process> neverExecutionList) {
+        this.neverExecutionList = neverExecutionList;
+    }
+
     public boolean isAlreadyPartitionName(String name){
-        for(Partition partition: partitions){
+        for(FreeStorage partition: partitions){
             if(partition.getName().equals(name))
                 return true;
         }
@@ -209,7 +219,7 @@ public class ProcessManager {
     }
 
     public void addPartition(String partitionName, BigInteger partitionSize){
-        this.partitions.add(new Partition(partitionName, partitionSize));
+        this.partitions.add(new FreeStorage(partitionName, partitionSize));
     }
 
     public void addToInQueue(Process process){
@@ -220,54 +230,86 @@ public class ProcessManager {
         this.copyToCurrentProcess();
         this.copyToCanExecutionProcess();
         this.initLoadToReady();
+        this.getNoExecuted();
             for (int i = 0; i < readyList.size(); i++) {
                 for (int j = 0; j < partitions.size(); j++) {
                 if ((readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == -1) || (readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == 0)) {
-                    this.loadToDispatchQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
+                    this.loadToDispatchQueue(new FreeStorageReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
                     if (readyList.get(i).getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1 || readyList.get(i).getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 0) {
-                        this.loadToExecQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize())));
+                        this.loadToExecQueue(new FreeStorageReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize())));
                     } else {
-                        this.loadToExecQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
+                        this.loadToExecQueue(new FreeStorageReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
                     }
                     if (!(readyList.get(i).getTime().compareTo(BigInteger.valueOf(0)) == 0)) {
                         if (readyList.get(i).getTime().compareTo(BigInteger.valueOf(PROCESS_TIME)) == 1) {
-                            this.loadToExpirationQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize())));
+                            this.loadToExpirationQueue(new FreeStorageReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize())));
                             this.loadToReadyQueue(new Process(readyList.get(i).getName(), this.consumeTimeProcess(readyList.get(i)), readyList.get(i).getSize()));
 
                         } else {
-                            this.loadToFinishedQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), BigInteger.valueOf(0), readyList.get(i).getSize())));
+                            this.loadToFinishedQueue(new FreeStorageReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), BigInteger.valueOf(0), readyList.get(i).getSize())));
                         }
 
                     }else {
-                        this.loadToFinishedQueue(new PartitionReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), BigInteger.valueOf(0), readyList.get(i).getSize())));
+                        this.loadToFinishedQueue(new FreeStorageReport(partitions.get(j).getName(), new Process(readyList.get(i).getName(), BigInteger.valueOf(0), readyList.get(i).getSize())));
                     }
                     j= partitions.size();
                 }
                 else {
-                    this.loadToNoExecQueue(new PartitionReport(partitions.get(j).getName(),new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
+                    this.loadToNoExecQueue(new FreeStorageReport(partitions.get(j).getName(),new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize())));
                 }
             }
+
         }
+        System.out.println("Listos:");
+        System.out.println(readyList.toString());
+
+        System.out.println("ejecutados:");
+        System.out.println(canExecutionList.toString());
+
+        System.out.println("no ejecutados:");
+        System.out.println(noExecutionList.toString());
+
+        System.out.println("finalizados:");
+        System.out.println(finishedList.toString());
+
+        System.out.println("no ejecutado:");
+        System.out.println(neverExecutionList.toString());
+    }
+
+    private void getNoExecuted(){
+        int count =0;
+        for (int i = 0; i < readyList.size(); i++) {
+            for (int j = 0; j < partitions.size(); j++) {
+                if ((readyList.get(i).getSize().compareTo(partitions.get(j).getSize()) == 1)){
+                    count++;
+                }
+            }
+            if(count == partitions.size()){
+                neverExecutionList.add(new Process(readyList.get(i).getName(), readyList.get(i).getTime(), readyList.get(i).getSize()));
+            }
+            count =0;
+        }
+
     }
 
     private void loadToReadyQueue(Process process) {
         this.readyList.add(process);
     }
 
-    private void loadToDispatchQueue(PartitionReport partitionReport) {
+    private void loadToDispatchQueue(FreeStorageReport partitionReport) {
         this.dispatchList.add(partitionReport);
     }
-    private void loadToExecQueue(PartitionReport process) {
+    private void loadToExecQueue(FreeStorageReport process) {
         this.executionList.add(process);
     }
-    private void loadToExpirationQueue(PartitionReport process) {
+    private void loadToExpirationQueue(FreeStorageReport process) {
         this.expirationList.add(process);
     }
-    private void loadToFinishedQueue(PartitionReport process) {
+    private void loadToFinishedQueue(FreeStorageReport process) {
         this.finishedList.add(process);
     }
 
-    private void loadToNoExecQueue(PartitionReport process) {
+    private void loadToNoExecQueue(FreeStorageReport process) {
         this.noExecutionList.add(process);
     }
 
@@ -282,13 +324,39 @@ public class ProcessManager {
         for (int i = 0; i < inQueue.size(); i++) {
             for (int j = 0; j < partitions.size(); j++) {
                     if ((inQueue.get(i).getSize().compareTo(partitions.get(j).getSize()) == -1) || (inQueue.get(i).getSize().compareTo(partitions.get(j).getSize()) == 0)){
-                        canExecutionList.add(new PartitionReport(partitions.get(i).getName(),inQueue.get(i)));
+                        canExecutionList.add(new FreeStorageReport(partitions.get(j).getName(),inQueue.get(i)));
                     }
             }
         }
     }
 
     private void initLoadToReady() {
+
+      /*  inQueue.add(new Process("p1", new BigInteger("10"), new BigInteger("10")));
+        inQueue.add(new Process("p2", new BigInteger("15"), new BigInteger("5")));
+        inQueue.add(new Process("p3", new BigInteger("9"), new BigInteger("15")));
+        inQueue.add(new Process("p4", new BigInteger("14"), new BigInteger("20")));
+        inQueue.add(new Process("p5", new BigInteger("10"), new BigInteger("30")));
+        inQueue.add(new Process("p6", new BigInteger("5"), new BigInteger("15")));
+        inQueue.add(new Process("p7", new BigInteger("4"), new BigInteger("150")));
+        inQueue.add(new Process("p8", new BigInteger("12"), new BigInteger("20")));
+        inQueue.add(new Process("p9", new BigInteger("21"), new BigInteger("10")));
+        inQueue.add(new Process("p10", new BigInteger("15"), new BigInteger("1")));
+        inQueue.add(new Process("p11", new BigInteger("10"), new BigInteger("3")));
+        inQueue.add(new Process("p12", new BigInteger("11"), new BigInteger("1")));
+        inQueue.add(new Process("p13", new BigInteger("10"), new BigInteger("20")));
+        inQueue.add(new Process("p14", new BigInteger("6"), new BigInteger("15")));
+        inQueue.add(new Process("p15", new BigInteger("10"), new BigInteger("12")));
+
+        inQueue.add(new Process("p16", new BigInteger("4"), new BigInteger("250")));
+
+
+        partitions.add(new FreeStorage("part1", new BigInteger("12")));
+        partitions.add(new FreeStorage("part2", new BigInteger("18")));
+        partitions.add(new FreeStorage("part3", new BigInteger("20")));
+        partitions.add(new FreeStorage("part4", new BigInteger("35")));
+        partitions.add(new FreeStorage("part5", new BigInteger("14")));*/
+
         readyList.addAll(inQueue);
     }
 

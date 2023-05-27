@@ -1,19 +1,14 @@
 package views;
 
-import models.Partition;
-import models.PartitionReport;
-import models.Process;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class PanelMenuReports extends JPanel {
 
     private JLabel titleMenuReports;
 
-    private Button existingProcesses, readyReport, dispatchedReport, executionReport, expirationReport, blockReport, wakeReport, finishedReport, back;
+    private Button existingProcesses, readyReport, dispatchedReport, executionReport, expirationReport, blockReport, wakeReport, finishedReport, back, neverExecution;
 
     public PanelMenuReports(ActionListener listener){
         this.setLayout(new GridBagLayout());
@@ -70,6 +65,11 @@ public class PanelMenuReports extends JPanel {
         finishedReport.addActionListener(listener);
         finishedReport.setActionCommand("NoEjecutados");
         Utilities.addComponent(this, this.finishedReport, 0, 9);
+
+        neverExecution = new Button("Nunca Ejecutados");
+        neverExecution.addActionListener(listener);
+        neverExecution.setActionCommand("NuncaEjecutados");
+        Utilities.addComponent(this, this.neverExecution, 0, 10);
 
         back = new Button("Atrás");
         back.addActionListener(listener);

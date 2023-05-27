@@ -14,7 +14,7 @@ public class DialogCreateInitialPartitions extends JDialog {
 
     public DialogCreateInitialPartitions(ActionListener actionListener, KeyListener keyListener){
         this.setModal(true);
-        this.setTitle("Crear particiones");
+        this.setTitle("Crear espacios en memoria");
         this.setLayout(new BorderLayout());
         this.setFont(ConstantsGUI.MAIN_MENU);
         this.setSize(460, 420);
@@ -33,7 +33,7 @@ public class DialogCreateInitialPartitions extends JDialog {
         this.add(panelCreatePartition, BorderLayout.NORTH);
         Object[][] tableModel = new Object[0][0];
         String [] headers = {"Nombre", "Tamaño"};
-        this.panelTable.changeTitle("Particiones");
+        this.panelTable.changeTitle("Espacios en memoria");
         this.panelTable.setTableProcess(new DefaultTableModel(tableModel, headers));
         this.panelTable.setEnableTable(false);
         this.add(panelTable,BorderLayout.CENTER);

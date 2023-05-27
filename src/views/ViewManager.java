@@ -16,7 +16,7 @@ public class ViewManager extends JFrame {
     private DialogCreateProcess dialogCreateProcess;
     private DialogCreateInitialPartitions dialogCreateInitialPartitions;
 
-    private Object[][] inQueue, currentList, canExecList, readyList, dispatchList, executionList, expirationList, finishedList, noExecutionList;
+    private Object[][] inQueue, currentList, canExecList, readyList, dispatchList, executionList, expirationList, finishedList, noExecutionList, neverExecutionLists;
 
 
     private boolean isPartitionsMenuActive = false;
@@ -50,6 +50,7 @@ public class ViewManager extends JFrame {
         this.dialogCreateProcess = new DialogCreateProcess(actionListener, keyListener);
 
         this.dialogCreateInitialPartitions = new DialogCreateInitialPartitions(actionListener, keyListener);
+        this.readyList = new Object[0][0];
     }
 
     public void showCreateInitialPartitions() {
@@ -123,6 +124,13 @@ public class ViewManager extends JFrame {
         SwingUtilities.updateComponentTreeUI(this);
     }
 
+    public void cleanAllFields(){
+        this.dialogCreateProcess.cleanAllFields();
+    }
+
+    public void cleanAllFieldsPartition(){
+        this.dialogCreateInitialPartitions.cleanAllFields();
+    }
     public int getIndexDataInTable(){
         return this.panelTable.getIndexDataProcess();
     }
@@ -224,6 +232,10 @@ public class ViewManager extends JFrame {
         this.noExecutionList = noExecutionList;
     }
 
+    public void setNeverExecutionLists(Object[][] neverExecutionLists) {
+        this.neverExecutionLists = neverExecutionLists;
+    }
+
     public void setValuesToCurrentProcess(){
         this.setValuesToTable(this.currentList, "Procesos Actuales");
     }
@@ -251,4 +263,11 @@ public class ViewManager extends JFrame {
         this.setValuesToTableReport(this.noExecutionList, "Procesos No Ejecutados");
     }
 
+    public void setValuesToNeverExecReport(){
+        this.setValuesToTable(this.neverExecutionLists, "Procesos Nunca Ejecutados");
+    }
+
+    public Object[][] getReadyList() {
+        return readyList;
+    }
 }

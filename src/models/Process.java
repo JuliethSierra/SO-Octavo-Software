@@ -44,6 +44,6 @@ public class Process {
                 "name='" + name + '\'' +
                 ", time=" + time +
                 ", size=" + size +
-                '}';
+                '}' + "\n";
     }
 }

@@ -54,7 +54,7 @@ public class PanelCreatePartition extends JPanel {
         this.add = new Button("Añadir");
         this.add.addActionListener(actionListener);
         this.add.setActionCommand("AñadirParticion");
-        this.add.setPreferredSize(new Dimension(150, 35));
+        this.add.setPreferredSize(new Dimension(170, 35));
         Utilities.addComponent(this, add, 0, 3);
 
         this.cancel = new Button("Listo");

@@ -1,6 +1,6 @@
 package controllers;
 
-import models.Partition;
+import models.FreeStorage;
 import models.Process;
 import models.ProcessManager;
 import views.Utilities;
@@ -21,6 +21,7 @@ public class Controller implements ActionListener, KeyListener {
         this.viewManager = new ViewManager(this, this);
         this.viewManager.showCreateInitialPartitions();
         //this.initSimulation();
+        processManager.initSimulation();
     }
 
     public static void main(String[] args) {
@@ -99,6 +100,9 @@ public class Controller implements ActionListener, KeyListener {
             case "NoEjecutados":
                 this.setValuesToNoExecReport();
                 break;
+            case "NuncaEjecutados":
+                this.setValuesToNeverExecReport();
+                break;
             case "Atras":
                 this.changeToMenu();
                 break;
@@ -113,18 +117,22 @@ public class Controller implements ActionListener, KeyListener {
     }
 
     private void initSimulation(){
-        if(this.processManager.getInQueue().size() == 0){
-            Utilities.showErrorDialog("Debe ingresar al menos un proceso para iniciar la simulación");
-        }
-        else {
-            int response = Utilities.showConfirmationWarning();
-            if(response == 0){
-                processManager.initSimulation();
-                Utilities.showDoneCPUProcess();
-                processManager.cleanQueueList();
-                processManager.copyToCurrentProcess();
-                this.cleanMainTableProcess();
-                this.loadReportList();
+        if(this.processManager.getPartitions().size()==0){
+            Utilities.showErrorDialog("Debe ingresar al menos una partición para iniciar la simulación");
+        }else{
+            if(this.processManager.getInQueue().size() == 0){
+                Utilities.showErrorDialog("Debe ingresar al menos un proceso para iniciar la simulación");
+            }
+            else {
+                int response = Utilities.showConfirmationWarning();
+                if(response == 0){
+                    processManager.initSimulation();
+                    Utilities.showDoneCPUProcess();
+                    processManager.cleanQueueList();
+                    processManager.copyToCurrentProcess();
+                    this.cleanMainTableProcess();
+                    this.loadReportList();
+                }
             }
         }
     }
@@ -139,6 +147,7 @@ public class Controller implements ActionListener, KeyListener {
 
         if(this.processManager.isAlreadyPartitionName(partitionName)){
             Utilities.showErrorDialog("Ya existe una partición con este nombre");
+            viewManager.cleanAllFieldsPartition();
         }
         else if(partitionName.trim().equals("")){
             Utilities.showErrorDialog("Ese nombre no está permitido para las particiones");
@@ -184,16 +193,17 @@ public class Controller implements ActionListener, KeyListener {
         BigInteger sizeProcess = this.viewManager.getProcessSize();
 
         if(processName.trim().isEmpty()){
-            Utilities.showErrorDialog("El nombre del proceso está vacío. Ingrese algún valor");
+            Utilities.showErrorDialog("El nombre del proceso está vacío, ingrese algún valor");
         }
         else if(this.processManager.isAlreadyProcessName(processName)){
-            Utilities.showErrorDialog("El nombre del proceso ya existe. Ingrese otro nombre");
+            Utilities.showErrorDialog("El nombre del proceso ya existe, ingrese otro nombre");
+            viewManager.cleanAllFields();
         }
         else if(timeProcess.toString().equals("-1")){
-            Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
+            Utilities.showErrorDialog("El tiempo del proceso está vacío, ingrese un valor numérico entero");
         }
         else if(sizeProcess.toString().equals("-1")){
-            Utilities.showErrorDialog("El tamaño del proceso está vacío. Ingrese un valor numérico entero");
+            Utilities.showErrorDialog("El tamaño del proceso está vacío, ingrese un valor numérico entero");
         }
         else{
             Process newProcess = new Process(processName, timeProcess, sizeProcess);
@@ -225,17 +235,19 @@ public class Controller implements ActionListener, KeyListener {
         String modifyNameProcess = this.viewManager.getProcessName();
 
         if(modifyNameProcess.trim().equals("")){
-            Utilities.showErrorDialog("El nombre del proceso está vacío. Ingrese algún valor");
+            Utilities.showErrorDialog("El nombre del proceso está vacío, ingrese algún valor");
         }
         else if(!processToModify.getName().equals(modifyNameProcess)
                 && this.processManager.isAlreadyProcessName(modifyNameProcess)){
-            Utilities.showErrorDialog("Ya existe un proceso con este nombre en esta partición");
+            Utilities.showErrorDialog("Ya existe un proceso con este nombre");
+            this.viewManager.cleanAllFields();
+
         }
         else if(this.viewManager.getProcessTime().toString().trim().equals("-1")){
-            Utilities.showErrorDialog("El tiempo del proceso está vacío. Ingrese un valor numérico entero");
+            Utilities.showErrorDialog("El tiempo del proceso está vacío, ingrese un valor numérico entero");
         }
         else if(this.viewManager.getProcessSize().toString().trim().equals("-1")){
-            Utilities.showErrorDialog("El tamaño del proceso está vacío. Ingrese un valor numérico entero");
+            Utilities.showErrorDialog("El tamaño del proceso está vacío, ingrese un valor numérico entero");
         }
         else {
             Process newProcess = new Process(this.viewManager.getProcessName(), this.viewManager.getProcessTime(), this.viewManager.getProcessSize());
@@ -277,30 +289,26 @@ public class Controller implements ActionListener, KeyListener {
             Utilities.showErrorDialog("Debe seleccionar una partición");
         }
         else {
-            if(this.processManager.getInQueue().size() > 0){
-                Utilities.showErrorDialog("No puede modificar particiones si existen procesos creados");
-            }
-            else {
-                Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
+                FreeStorage partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
                 this.viewManager.setPartitionName(partitionToModify.getName());
                 this.viewManager.setPartitionSize(partitionToModify.getSize().toString());
                 this.viewManager.showModifyPartitionDialog();
-            }
         }
     }
 
     private void confirmModifyPartition(){
-        Partition partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
+        FreeStorage partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
         String modifyPartitionName = this.viewManager.getPartitionName();
 
         if(modifyPartitionName.trim().equals("")){
-            Utilities.showErrorDialog("El nombre de la partición está vacío. Ingrese algún valor");
+            Utilities.showErrorDialog("El nombre de la partición está vacío, ingrese algún valor");
         }
         else if(!partitionToModify.getName().equals(modifyPartitionName) && this.processManager.isAlreadyPartitionName(modifyPartitionName)){
             Utilities.showErrorDialog("Ya existe una partición con este nombre");
+            viewManager.cleanAllFieldsPartition();
         }
         else {
-            Partition newPartition = new Partition(this.viewManager.getPartitionName(), this.viewManager.getPartitionSize());
+            FreeStorage newPartition = new FreeStorage(this.viewManager.getPartitionName(), this.viewManager.getPartitionSize());
             this.processManager.updatePartitions(newPartition, this.viewManager.getIndexDataInTable());
             this.viewManager.hideCreatePartitionsDialog();
             this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
@@ -311,10 +319,6 @@ public class Controller implements ActionListener, KeyListener {
         if(this.viewManager.getIndexDataInTable() == -1){
             Utilities.showErrorDialog("Debe seleccionar una partición");
         }
-        else {
-            if(this.processManager.getInQueue().size() > 0){
-                Utilities.showErrorDialog("No puede eliminar particiones si existen procesos creados");
-            }
             else {
                 int confirmation = Utilities.showConfirmationWarning();
                 if(confirmation == 0){
@@ -322,9 +326,6 @@ public class Controller implements ActionListener, KeyListener {
                     this.viewManager.setValuesToPartitionsTableInCrud(this.processManager.getPartitionsListAsMatrixObject(this.processManager.getPartitions()));
                 }
             }
-
-
-        }
     }
 
     private void changeToMenu(){
@@ -348,7 +349,7 @@ public class Controller implements ActionListener, KeyListener {
     }
 
     private void changeToReportMenu(){
-        if(this.processManager.getReadyList().size() != 0){
+        if(this.viewManager.getReadyList().length != 0){
             this.viewManager.changeToReportMenu();
             this.viewManager.setValuesToCurrentProcess();
         }
@@ -368,6 +369,7 @@ public class Controller implements ActionListener, KeyListener {
         viewManager.setExpirationList(processManager.getProcessListAsMatrixReportObject(processManager.getExpirationList()));
         viewManager.setFinishedList(processManager.getProcessListAsMatrixReportObject(processManager.getFinishedList()));
         viewManager.setNoExecutionList(processManager.getProcessListAsMatrixReportObject(processManager.getNoExecutionList()));
+        viewManager.setNeverExecutionLists(processManager.getProcessListAsMatrixObject(processManager.getNeverExecutionList()));
     }
 
     public void setValuesToCurrentProcess(){
@@ -395,6 +397,9 @@ public class Controller implements ActionListener, KeyListener {
     }
     public void setValuesToNoExecReport(){
         this.viewManager.setValuesToNoExecReport();
+    }
+    public void setValuesToNeverExecReport(){
+        this.viewManager.setValuesToNeverExecReport();
     }
     @Override
     public void keyTyped(KeyEvent e) {

@@ -1,13 +1,11 @@
 package models;
 
-import java.util.ArrayList;
-
-public class PartitionReport {
+public class FreeStorageReport {
 
     private String partitionName;
     private Process process;
 
-    public PartitionReport(String partitionName, Process process) {
+    public FreeStorageReport(String partitionName, Process process) {
         this.partitionName = partitionName;
         this.process = process;
     }
@@ -33,6 +31,6 @@ public class PartitionReport {
         return "PartitionReport{" +
                 "partitionName='" + partitionName + '\'' +
                 ", process=" + process +
-                '}';
+                '}' + "\n";
     }
 }
