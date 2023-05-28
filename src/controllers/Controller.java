@@ -150,7 +150,7 @@ public class Controller implements ActionListener, KeyListener {
     }
 
     private void addPartition() {
-        String partitionName = this.viewManager.getPartitionName();
+        String partitionName = this.viewManager.getPartitionName().trim();
         BigInteger partitionSize = this.viewManager.getPartitionSize();
 
         if(this.processManager.isAlreadyPartitionName(partitionName)){
@@ -196,7 +196,7 @@ public class Controller implements ActionListener, KeyListener {
     }
 
     private void confirmAddProcess(){
-        String processName = this.viewManager.getProcessName();
+        String processName = this.viewManager.getProcessName().trim();
         BigInteger timeProcess = this.viewManager.getProcessTime();
         BigInteger sizeProcess = this.viewManager.getProcessSize();
 
@@ -240,7 +240,7 @@ public class Controller implements ActionListener, KeyListener {
 
     private void confirmModifyProcess(){
         Process processToModify = this.processManager.getProcessInQueue(this.viewManager.getIndexDataInTable());
-        String modifyNameProcess = this.viewManager.getProcessName();
+        String modifyNameProcess = this.viewManager.getProcessName().trim();
 
         if(modifyNameProcess.trim().equals("")){
             Utilities.showErrorDialog("El nombre del proceso está vacío, ingrese algún valor");
@@ -248,7 +248,6 @@ public class Controller implements ActionListener, KeyListener {
         else if(!processToModify.getName().equals(modifyNameProcess)
                 && this.processManager.isAlreadyProcessName(modifyNameProcess)){
             Utilities.showErrorDialog("Ya existe un proceso con este nombre");
-            this.viewManager.cleanAllFields();
 
         }
         else if(this.viewManager.getProcessTime().toString().trim().equals("-1")){
@@ -258,7 +257,7 @@ public class Controller implements ActionListener, KeyListener {
             Utilities.showErrorDialog("El tamaño del proceso está vacío, ingrese un valor numérico entero");
         }
         else {
-            Process newProcess = new Process(this.viewManager.getProcessName(), this.viewManager.getProcessTime(), this.viewManager.getProcessSize());
+            Process newProcess = new Process(this.viewManager.getProcessName().trim(), this.viewManager.getProcessTime(), this.viewManager.getProcessSize());
             this.processManager.updateProcessInQueue(newProcess, this.viewManager.getIndexDataInTable());
             this.viewManager.hideCreateAndModifyProcessDialog();
             this.viewManager.setValuesToTable(this.processManager.getProcessListAsMatrixObject(this.processManager.getInQueue()), "Procesos Existentes");
@@ -306,14 +305,14 @@ public class Controller implements ActionListener, KeyListener {
 
     private void confirmModifyPartition(){
         FreeStorage partitionToModify = this.processManager.getPartitionByIndex(this.viewManager.getIndexDataInTable());
-        String modifyPartitionName = this.viewManager.getPartitionName();
+        String modifyPartitionName = this.viewManager.getPartitionName().trim();
 
         if(modifyPartitionName.trim().equals("")){
             Utilities.showErrorDialog("El nombre de la partición está vacío, ingrese algún valor");
         }
         else if(!partitionToModify.getName().equals(modifyPartitionName) && this.processManager.isAlreadyPartitionName(modifyPartitionName)){
             Utilities.showErrorDialog("Ya existe una partición con este nombre");
-            viewManager.cleanAllFieldsPartition();
+
         }
         else {
             FreeStorage newPartition = new FreeStorage(this.viewManager.getPartitionName(), this.viewManager.getPartitionSize());
