@@ -16,7 +16,7 @@ public class ViewManager extends JFrame {
     private DialogCreateProcess dialogCreateProcess;
     private DialogCreateInitialPartitions dialogCreateInitialPartitions;
 
-    private Object[][] inQueue, currentList, canExecList, readyList, dispatchList, executionList, expirationList, finishedList, noExecutionList, neverExecutionLists;
+    private Object[][] inQueue, currentList, canExecList, readyList, dispatchList, executionList, expirationList, finishedList, noExecutionList, neverExecutionLists, finishedListSort,  noExecutionListSort;
 
 
     private boolean isPartitionsMenuActive = false;
@@ -228,9 +228,18 @@ public class ViewManager extends JFrame {
     public void setFinishedList(Object[][] finishedList) {
         this.finishedList = finishedList;
     }
+
+    public void setFinishedListSort(Object[][] finishedListSort) {
+        this.finishedListSort = finishedListSort;
+    }
     public void setNoExecutionList(Object[][] noExecutionList) {
         this.noExecutionList = noExecutionList;
     }
+
+    public void setNoExecutionListSort(Object[][] noExecutionListSort) {
+        this.noExecutionListSort = noExecutionListSort;
+    }
+
 
     public void setNeverExecutionLists(Object[][] neverExecutionLists) {
         this.neverExecutionLists = neverExecutionLists;
@@ -259,6 +268,10 @@ public class ViewManager extends JFrame {
     public void setValuesToFinishedReport(){
         this.setValuesToTableReport(this.finishedList, "Procesos Finalizados");
     }
+
+    public void setValuesToFinishedReportSort(){
+        this.setValuesToTableReport(this.finishedListSort, "Procesos Finalizados por partición");
+    }
     public void setValuesToNoExecReport(){
         this.setValuesToTableReport(this.noExecutionList, "Procesos No Ejecutados");
     }
@@ -267,6 +280,9 @@ public class ViewManager extends JFrame {
         this.setValuesToTable(this.neverExecutionLists, "Procesos Nunca Ejecutados");
     }
 
+    public void setValuesToNoExecReportSort(){
+        this.setValuesToTable(this.noExecutionListSort, "No Ejecutados partición");
+    }
     public Object[][] getReadyList() {
         return readyList;
     }

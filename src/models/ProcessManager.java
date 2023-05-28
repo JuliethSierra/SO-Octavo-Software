@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class ProcessManager {
-    private final int PROCESS_TIME = 5;
+    private final int PROCESS_TIME = 1;
     private ArrayList<FreeStorageReport> dispatchList, executionList, expirationList, finishedList, canExecutionList, noExecutionList;
     private ArrayList<FreeStorage> partitions;
 
@@ -260,20 +260,6 @@ public class ProcessManager {
             }
 
         }
-        System.out.println("Listos:");
-        System.out.println(readyList.toString());
-
-        System.out.println("ejecutados:");
-        System.out.println(canExecutionList.toString());
-
-        System.out.println("no ejecutados:");
-        System.out.println(noExecutionList.toString());
-
-        System.out.println("finalizados:");
-        System.out.println(finishedList.toString());
-
-        System.out.println("no ejecutado:");
-        System.out.println(neverExecutionList.toString());
     }
 
     private void getNoExecuted(){

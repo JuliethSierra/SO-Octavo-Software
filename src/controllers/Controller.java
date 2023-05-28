@@ -1,6 +1,7 @@
 package controllers;
 
 import models.FreeStorage;
+import models.FreeStorageReport;
 import models.Process;
 import models.ProcessManager;
 import views.Utilities;
@@ -11,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Controller implements ActionListener, KeyListener {
     private ProcessManager processManager;
@@ -97,11 +99,17 @@ public class Controller implements ActionListener, KeyListener {
             case "Finalizados":
                 this.setValuesToFinishedReport();
                 break;
+            case "FinalizadosPart":
+                this.setValuesToFinishedReportSort();
+                break;
             case "NoEjecutados":
                 this.setValuesToNoExecReport();
                 break;
             case "NuncaEjecutados":
                 this.setValuesToNeverExecReport();
+                break;
+            case "NoEjecutadosSort":
+                this.setValuesToNoExecReportSort();
                 break;
             case "Atras":
                 this.changeToMenu();
@@ -359,16 +367,89 @@ public class Controller implements ActionListener, KeyListener {
 
     }
 
+    private ArrayList<FreeStorageReport> sotCanReport(){
+        ArrayList<FreeStorageReport> list = new ArrayList<>();
+        for (int j = 0; j < processManager.getPartitions().size(); j++) {
+            for (int i = 0; i < processManager.getCanExecutionList().size(); i++) {
+                if (processManager.getCanExecutionList().get(i).getPartitionName().equals(processManager.getPartitions().get(j).getName())) {
+                    list.add(processManager.getCanExecutionList().get(i));
+                }
+            }
+        }
+        return list;
+    }
+
+    private ArrayList<FreeStorageReport> sotFinishedReport(){
+        ArrayList<FreeStorageReport> list = new ArrayList<>();
+        for (int j = 0; j < processManager.getPartitions().size(); j++) {
+            for (int i = 0; i < processManager.getFinishedList().size(); i++) {
+                if (processManager.getFinishedList().get(i).getPartitionName().equals(processManager.getPartitions().get(j).getName())) {
+                    list.add(processManager.getFinishedList().get(i));
+                }
+            }
+        }
+        return list;
+    }
+
+    private ArrayList<FreeStorageReport> sortDispReport(){
+        ArrayList<FreeStorageReport> list = new ArrayList<>();
+        for (int j = 0; j < processManager.getPartitions().size(); j++) {
+            for (int i = 0; i < processManager.getDispatchList().size(); i++) {
+                if (processManager.getDispatchList().get(i).getPartitionName().equals(processManager.getPartitions().get(j).getName())) {
+                    list.add(processManager.getDispatchList().get(i));
+                }
+            }
+        }
+        return list;
+    }
+
+    private ArrayList<FreeStorageReport> sortExecReport(){
+        ArrayList<FreeStorageReport> list = new ArrayList<>();
+        for (int j = 0; j < processManager.getPartitions().size(); j++) {
+            for (int i = 0; i < processManager.getExecutionList().size(); i++) {
+                if (processManager.getExecutionList().get(i).getPartitionName().equals(processManager.getPartitions().get(j).getName())) {
+                    list.add(processManager.getExecutionList().get(i));
+                }
+            }
+        }
+        return list;
+    }
+
+    private ArrayList<FreeStorageReport> sortExpReport(){
+        ArrayList<FreeStorageReport> list = new ArrayList<>();
+        for (int j = 0; j < processManager.getPartitions().size(); j++) {
+            for (int i = 0; i < processManager.getExpirationList().size(); i++) {
+                if (processManager.getExpirationList().get(i).getPartitionName().equals(processManager.getPartitions().get(j).getName())) {
+                    list.add(processManager.getExpirationList().get(i));
+                }
+            }
+        }
+        return list;
+    }
+
+    private ArrayList<FreeStorageReport> sortNoExecReport(){
+        ArrayList<FreeStorageReport> list = new ArrayList<>();
+        for (int j = 0; j < processManager.getPartitions().size(); j++) {
+            for (int i = 0; i < processManager.getNoExecutionList().size(); i++) {
+                if (processManager.getNoExecutionList().get(i).getPartitionName().equals(processManager.getPartitions().get(j).getName())) {
+                    list.add(processManager.getNoExecutionList().get(i));
+                }
+            }
+        }
+        return list;
+    }
     private void loadReportList(){
         viewManager.setCurrentList(processManager.getProcessListAsMatrixObject(processManager.getCurrentList()));
-        viewManager.setCanExecList(processManager.getProcessListAsMatrixReportObject(processManager.getCanExecutionList()));
+        viewManager.setCanExecList(processManager.getProcessListAsMatrixReportObject(this.sotCanReport()));
         viewManager.setInQueueList(processManager.getProcessListAsMatrixObject(processManager.getInQueue()));
         viewManager.setReadyList(processManager.getProcessListAsMatrixObject(processManager.getReadyList()));
-        viewManager.setDispatchList(processManager.getProcessListAsMatrixReportObject(processManager.getDispatchList()));
-        viewManager.setExecutionList(processManager.getProcessListAsMatrixReportObject(processManager.getExecutionList()));
-        viewManager.setExpirationList(processManager.getProcessListAsMatrixReportObject(processManager.getExpirationList()));
+        viewManager.setDispatchList(processManager.getProcessListAsMatrixReportObject(this.sortDispReport()));
+        viewManager.setExecutionList(processManager.getProcessListAsMatrixReportObject(this.sortExecReport()));
+        viewManager.setExpirationList(processManager.getProcessListAsMatrixReportObject(this.sortExpReport()));
         viewManager.setFinishedList(processManager.getProcessListAsMatrixReportObject(processManager.getFinishedList()));
+        viewManager.setFinishedListSort(processManager.getProcessListAsMatrixReportObject(this.sotFinishedReport()));
         viewManager.setNoExecutionList(processManager.getProcessListAsMatrixReportObject(processManager.getNoExecutionList()));
+        viewManager.setNoExecutionListSort(processManager.getProcessListAsMatrixReportObject(this.sortNoExecReport()));
         viewManager.setNeverExecutionLists(processManager.getProcessListAsMatrixObject(processManager.getNeverExecutionList()));
     }
 
@@ -395,11 +476,18 @@ public class Controller implements ActionListener, KeyListener {
     public void setValuesToFinishedReport(){
         this.viewManager.setValuesToFinishedReport();
     }
+
+    public void setValuesToFinishedReportSort(){
+        this.viewManager.setValuesToFinishedReportSort();
+    }
     public void setValuesToNoExecReport(){
         this.viewManager.setValuesToNoExecReport();
     }
     public void setValuesToNeverExecReport(){
         this.viewManager.setValuesToNeverExecReport();
+    }
+    public void setValuesToNoExecReportSort(){
+        this.viewManager.setValuesToNoExecReportSort();
     }
     @Override
     public void keyTyped(KeyEvent e) {

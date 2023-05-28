@@ -8,7 +8,7 @@ public class PanelMenuReports extends JPanel {
 
     private JLabel titleMenuReports;
 
-    private Button existingProcesses, readyReport, dispatchedReport, executionReport, expirationReport, blockReport, wakeReport, finishedReport, back, neverExecution;
+    private Button existingProcesses, readyReport, dispatchedReport, executionReport, expirationReport, blockReport, wakeReport, finishedReport, back, neverExecution, finishedReportSort, noExecutionListSort, noExecutionList;
 
     public PanelMenuReports(ActionListener listener){
         this.setLayout(new GridBagLayout());
@@ -61,15 +61,26 @@ public class PanelMenuReports extends JPanel {
         finishedReport.setActionCommand("Finalizados");
         Utilities.addComponent(this, this.finishedReport, 0, 8);
 
-        finishedReport = new Button("No Ejecutados");
-        finishedReport.addActionListener(listener);
-        finishedReport.setActionCommand("NoEjecutados");
-        Utilities.addComponent(this, this.finishedReport, 0, 9);
+        finishedReportSort = new Button("Fin. Partición");
+        finishedReportSort.addActionListener(listener);
+        finishedReportSort.setActionCommand("FinalizadosPart");
+        Utilities.addComponent(this, this.finishedReportSort, 0, 9);
+
+        noExecutionList = new Button("No Ejecutados");
+        noExecutionList.addActionListener(listener);
+        noExecutionList.setActionCommand("NoEjecutados");
+        Utilities.addComponent(this, this.noExecutionList, 0, 10);
+
+        noExecutionListSort = new Button("No Ejecutados Part");
+        noExecutionListSort.addActionListener(listener);
+        noExecutionListSort.setActionCommand("NoEjecutadosSort");
+        Utilities.addComponent(this, this.noExecutionListSort, 0, 11);
+
 
         neverExecution = new Button("Nunca Ejecutados");
         neverExecution.addActionListener(listener);
         neverExecution.setActionCommand("NuncaEjecutados");
-        Utilities.addComponent(this, this.neverExecution, 0, 10);
+        Utilities.addComponent(this, this.neverExecution, 0, 12);
 
         back = new Button("Atrás");
         back.addActionListener(listener);
